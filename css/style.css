@@ -1,0 +1,208 @@
+
+html {
+	height: 100%;
+}
+body {
+	font: 12px/18px Verdana, Arial, Tahoma, sans-serif;
+	height: 99%;
+	margin: 0;
+	padding: 0;
+}
+a {
+	color: blue;
+	outline: none;
+	text-decoration: underline;
+}
+a:hover {
+	text-decoration: none;
+}
+p {
+	margin: 0 0 18px
+}
+img {
+	border: none;
+}
+input {
+	vertical-align: middle;
+}
+#wrapper {
+	width: 100%;
+	min-width: 1000px;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	
+}
+
+
+/* Header
+-----------------------------------------------------------------------------*/
+#header {
+	height: 75px;
+	margin: 2px 5px;
+	line-height: 75px;
+	padding-left: 35px;
+	
+}
+#header img{
+	margin-top: 7px;
+}
+
+/* Middle
+-----------------------------------------------------------------------------*/
+#middle {
+	width: 100%;
+	padding: 0 0 50px;
+	height: 1%;
+	position: relative;
+}
+#middle:after {
+	content: '.';
+	display: block;
+	clear: both;
+	visibility: hidden;
+	height: 0;
+}
+#container {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+	
+}
+#content {
+	padding: 0 5px 0 365px;
+}
+
+
+/* Sidebar Left
+-----------------------------------------------------------------------------*/
+#sideLeft {
+	float: left;
+	width: 355px;
+	margin-left: -100%;
+	position: relative;
+	padding-left: 5px;
+}
+
+
+/* Footer
+-----------------------------------------------------------------------------*/
+#footer {
+	margin: -50px 5px 0 5px;
+	min-width: 1000px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+}
+
+
+
+.my_form_elem {
+	border: 0px solid #000;
+	position: relative;
+	overflow: hidden;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.my_form_elem_title {
+	width: 35%;
+	border: 0px solid #00f;
+	float: left;
+	position:relative;
+	text-align: right;
+	padding-right: 5px;
+
+	font-size: 95%;
+}
+
+
+
+.form_elem {
+	border: 1px solid #ffffff;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: Verdana,Tahoma,Arial,sans-serif;
+	font-size: 14px;
+	text-align: left;
+}
+
+.form_elem h1, .form_elem h2, .form_elem h3, .form_elem h4, .form_elem h5, .form_elem h6 {
+	margin-top: 4px;
+	margin-bottom: 0px;
+}
+
+.form_elem_sel {
+	background-color: #F60;
+}
+
+.form_elem_title {
+	width: 30%;
+	border: 0px solid #00f;
+	float: left;
+	position:relative;
+	text-align: right;
+	padding-right: 10px;
+
+	font-size: 95%;
+}
+.form_block_title {
+	padding-left: 10px;
+}
+.form_block_title_small {
+	
+
+	padding-left: 30px;
+	margin-bottom: 0px;
+}
+
+
+.form_elem_required {
+	color:#F00;
+}
+
+.form_elem input[type=text], input[type=file], textarea, select {
+	width: 60%;
+
+}
+
+.elem_button {
+	margin-bottom: 5px;
+	width: 130px;
+	padding: 3px 1px 3px 0px;
+	text-align: left;
+}
+
+#tabs ul{
+	text-align: center;
+	padding-left: 16px;
+}
+
+a {
+	cursor: pointer;
+}
+#progressbar {
+	display: none;
+	width: 300px;
+	height: 12px;
+	margin-bottom: 4px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	background-image: url('../images/pbar-ani.gif');
+}
+.elem_50 {
+	display: inline-table;
+	width: 39%;
+}
+
+.elem_50 .form_elem_title{
+	width: 30%;
+	padding-left: 10px;
+}
+
+#step_tabs {
+	text-align: right;
+}
