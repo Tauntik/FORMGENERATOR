@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+	session_start();
 	require('libs/smarty/Smarty.class.php');
 	$smarty = new Smarty;
 	$smarty -> template_dir = 'tpl/';
