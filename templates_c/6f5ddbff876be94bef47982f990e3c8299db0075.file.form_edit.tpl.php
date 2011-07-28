@@ -1,23 +1,28 @@
-<?php /* Smarty version Smarty-3.0.8, created on 2011-07-28 12:46:43
+<?php /* Smarty version Smarty-3.0.8, created on 2011-07-28 14:46:19
          compiled from "tpl/form_edit.tpl" */ ?>
-<?php /*%%SmartyHeaderCode:198034e3121f34f7ae3-19885423%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+<?php /*%%SmartyHeaderCode:259784e313dfbc7da22-03809376%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
   array (
     '6f5ddbff876be94bef47982f990e3c8299db0075' => 
     array (
       0 => 'tpl/form_edit.tpl',
-      1 => 1311842801,
+      1 => 1311849978,
+      2 => 'file',
+    ),
+    'cf81e985b630d9e345e2ff550df8bb2897ed5c25' => 
+    array (
+      0 => 'tpl/main.tpl',
+      1 => 1311849773,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '198034e3121f34f7ae3-19885423',
+  'nocache_hash' => '259784e313dfbc7da22-03809376',
   'function' => 
   array (
   ),
   'has_nocache_code' => false,
 )); /*/%%SmartyHeaderCode%%*/?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -47,7 +52,9 @@ $_smarty_tpl->decodeProperties(array (
 
 	<div id="middle">
 
-		<div id="container">
+		
+	
+	<div id="container">
 			<div id="content">
 				<div id="step_tabs">
 					<ul>
@@ -266,6 +273,7 @@ $_smarty_tpl->decodeProperties(array (
 				<br/>
 			</div>
 		</div><!-- .sidebar#sideLeft -->
+	
 
 	</div><!-- #middle-->
 
