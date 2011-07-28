@@ -16,12 +16,14 @@ imagefill($img, 0, 0, $color);*/
 //imagearc($img, rand(0,220),rand(0,50),rand(1,220),rand(1,50),0,50,0x000);
 
 // Черночки
-for($i = 0; $i < 8; $i++) {
+for($i = 0; $i < 38; $i++) {
 	$ink = imagecolorallocate($img, rand(0,255), rand(1,255), rand(1,255));
+	$x = rand(1,219);
+	$x2 = rand(1,219);
 	$y = rand(1,49);
 	$y2 = rand(1,49);
 	//imageline($img, 0, $y, 219, $y,$ink);
-	imageline($img, 0, $y, 219, $y2,$ink);
+	imageline($img, $x, $y, $x2, $y2,$ink);
 }
 /*
 imagearc($img,20,rand(0,5),rand(1,220),50,rand(0,50),rand(50,100),0x000);
