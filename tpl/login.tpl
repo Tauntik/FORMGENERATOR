@@ -8,6 +8,6 @@
 			capcha: <input type="text" name="capcha" /> <br/>
 			<input type="submit" value="Send" />
 		</form>
-		<br/><br/><br/><br/><br/>
+
 	{/block}
 {/extends}

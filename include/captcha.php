@@ -19,7 +19,9 @@ imagefill($img, 0, 0, $color);*/
 for($i = 0; $i < 8; $i++) {
 	$ink = imagecolorallocate($img, rand(0,255), rand(1,255), rand(1,255));
 	$y = rand(1,49);
-	imageline($img, 0, $y, 219, $y,$ink);
+	$y2 = rand(1,49);
+	//imageline($img, 0, $y, 219, $y,$ink);
+	imageline($img, 0, $y, 219, $y2,$ink);
 }
 /*
 imagearc($img,20,rand(0,5),rand(1,220),50,rand(0,50),rand(50,100),0x000);
