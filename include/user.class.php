@@ -37,7 +37,7 @@ class user {
 	}
 	
 	// Выходим из сайта
-	public function logout ($login) {
+	public function logout () {
 		if (!isset($_SESSION)) session_start();
 		if (isset($_SESSION)&& count($_SESSION)>0) {
 			foreach ($_SESSION as $k => $v) {
