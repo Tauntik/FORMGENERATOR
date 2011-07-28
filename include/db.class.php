@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 
 class db {
 	
@@ -8,7 +8,7 @@ class db {
 	static private $mysql_database = "fg";
 	static private $charset = "cp1251";
 
-	// Ïîäêëþ÷àåìñÿ ê áàçå
+	// ÐŸÐ¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ÑÑ Ðº Ð±Ð°Ð·Ðµ
 	static function db_connect()
 	{
 	
@@ -33,7 +33,7 @@ class db {
 		return 0;
 	}
 	
-	// Âûïîëíÿåò çàïðîñ ê ÁÄ
+	// Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÑÐµÑ‚ Ð·Ð°Ð¿Ñ€Ð¾Ñ Ðº Ð‘Ð”
 	static function mq($sql)
 	{
 		$res=mysql_query($sql);
@@ -46,7 +46,7 @@ class db {
 		return $res;
 	}
 
-	// Âûïîëíÿåì ìíîæåñòâåííûé çàïðîñ
+	// Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÑÐµÐ¼ Ð¼Ð½Ð¾Ð¶ÐµÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ð¹ Ð·Ð°Ð¿Ñ€Ð¾Ñ
 	static function mysql_querys($sqls)
 	{
 		$sqlarr=explode(';',$sqls);
