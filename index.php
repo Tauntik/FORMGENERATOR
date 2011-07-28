@@ -37,7 +37,7 @@
 					header("Location: ?page=form_edit");		
 				}
 				else {
-					$smarty -> assign('errormessage', 'Вы ввели неверно авторизационные данные');
+					$smarty -> assign('error_message', 'Вы ввели неверно авторизационные данные');
 					header("Location: ?page=login");		
 				}
 			}
