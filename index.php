@@ -7,7 +7,7 @@
 	require_once ('include/user.class.php');
 	
 	$smarty = new Smarty;
-	$template_dir = 'tpl/';
+	$smarty -> template_dir = 'tpl/';
 	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
 	
 	switch ($page) {
