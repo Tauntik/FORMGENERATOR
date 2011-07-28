@@ -1,6 +1,7 @@
 //_TODO Добавить удаление шагов
 //_TODO К <title> выбор Bold, Align, H1-H6
 //_TODO перетаскивание элемента при добавлении
+//_TODO бегующий курсор
 
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
@@ -14,7 +15,7 @@
 //TODO при добавлении элемента сделать чтобы он выделялся, чтобы последующие элементы вставлялись после него
 //TODO проверка на повторяющиеся id
 //TODO сделать пример заполнения для <SELECT> <CHECKBOX>
-//TODO бегующий курсор
+
 
 //TODO загрузка в SELECT файла с OPTION
 //TODO сделать готовые решения для масок
@@ -23,6 +24,8 @@ var elem_count = 0;
 var current_step_tab = "#step_1";
 var count_step_tab = 1;
 
+
+//Добавление шага формы
 function add_step_tab(){
 	//var selected = $( "#step_tabs" ).tabs( "option", "selected" );
 	count_step_tab++;
@@ -32,6 +35,7 @@ function add_step_tab(){
 	$( "#step_tabs" ).tabs( "select" , count_step_tab - 1 );
 }
 
+//Удаление шага формы
 function delete_step_tab(){
 	//var selected = $( "#step_tabs" ).tabs( "option", "selected" );
 	if (count_step_tab > 1) {
@@ -106,7 +110,8 @@ function get_elem_html(obj) {
 	
 	
 	json = json.replace(/ /g, '&nbsp;');
-	//alert(obj.title);
+	
+	//В зависимости от типа объекта возвращает HTML элемента
 	switch (obj.type) {			
 		case 'my_elem_title':
 			if (!obj.elem_align) obj.elem_align = "left";
@@ -199,25 +204,29 @@ function get_elem_html(obj) {
 }
 
 //Функция отображает/скрывает элементы редактирования полей формы в зависимости от типа выбранного поля
+//устанавливает параметры выделенного элемента
 function show_hide_elem_panel() {
 	
 	var json = $(".form_elem[sel=sel]").attr('json');
-	if (!json) {json = '{}';}
-		
+	if (!json) {json = '{}';}		
 	var b = JSON.parse(json);
 	
-	
+	//скрываем все элементы редактирования
 	$(".my_form_elem").hide();
 	
 	
 	
 	if (!b.type) return false;
 	
+	//Очищаем все значения элементов для редактирования
 	$("#elem_del_options_select").html("");
-	$("#elem_select_default").html("");
-	
+	$("#elem_select_default").html("");	
 	$(".my_form_elem input").val("");
+	$(".my_form_elem input[type=checkbox]").removeAttr('checked');
 	
+	
+	
+	//Устанавливаем значения элементов для редактирования, значения берутся из объекта JSON.parse(json)
 	$("#elem_title").val(b.elem_title);
 	$("#elem_id").val(b.elem_id);
 	$("#elem_name").val(b.elem_name);
@@ -232,10 +241,6 @@ function show_hide_elem_panel() {
 	
 	$("#elem_file_accept").val(b.elem_file_accept);
 	$("#elem_file_size").val(b.elem_file_size);
-		
-	
-	
-	
 	
 	if (b.select_options) {
 		$("#elem_del_options_select").html($("#" + b.elem_id).html());
@@ -244,67 +249,48 @@ function show_hide_elem_panel() {
 	
 	if (b.elem_digits) {
 		$("#elem_digits").attr('checked', 'checked');
-	} else {
-		$("#elem_digits").removeAttr('checked');
 	}
 	
 	if (b.elem_number) {
 		$("#elem_number").attr('checked', 'checked');
-	} else {
-		$("#elem_number").removeAttr('checked');
 	}
 	
 	if (b.elem_email) {
 		$("#elem_email").attr('checked', 'checked');
-	} else {
-		$("#elem_email").removeAttr('checked');
 	}
 	
 	if (b.elem_url) {
 		$("#elem_url").attr('checked', 'checked');
-	} else {
-		$("#elem_url").removeAttr('checked');
 	}
 	
 	if (b.elem_required) {
 		$("#elem_required").attr('checked', 'checked');
-	} else {
-		$("#elem_required").removeAttr('checked');
 	}
 	
 	if (b.elem_onchange) {
 		$("#elem_onchange").attr('checked', 'checked');
-	} else {
-		$("#elem_onchange").removeAttr('checked');
 	}
 	
 	if (b.elem_onclick) {
 		$("#elem_onclick").attr('checked', 'checked');
-	} else {
-		$("#elem_onclick").removeAttr('checked');
 	}
 	
 	if (b.elem_bold) {
 		$("#elem_bold").attr('checked', 'checked');
-	} else {
-		$("#elem_bold").removeAttr('checked');
 	}
 
 	if (b.elem_italic) {
 		$("#elem_italic").attr('checked', 'checked');
-	} else {
-		$("#elem_italic").removeAttr('checked');
 	}
 	
 	if (b.elem_50) {
 		$("#elem_50").attr('checked', 'checked');
-	} else {
-		$("#elem_50").removeAttr('checked');
 	}
 	
 	$("#elem_align option[value=" + b.elem_align + "]").attr('selected', 'selected');
 	$("#elem_h option[value=" + b.elem_h + "]").attr('selected', 'selected');
 
+	//Устанавливаем видимость элементов для редактирования
 	var properties = new Object();
 
 	properties.elem_class = true;
@@ -314,8 +300,7 @@ function show_hide_elem_panel() {
 	
 	switch (b.type) {			
 		case 'my_elem_title':
-			properties.elem_name = false;
-			
+			properties.elem_name = false;			
 			properties.elem_bold = true;
 			properties.elem_italic = true;
 			properties.elem_align = true;
@@ -323,8 +308,7 @@ function show_hide_elem_panel() {
 			break;
 
 		case 'my_elem_title_small':
-			properties.elem_name = false;
-			
+			properties.elem_name = false;			
 			properties.elem_required = true;			
 			properties.elem_bold = true;
 			properties.elem_italic = true;
@@ -337,9 +321,7 @@ function show_hide_elem_panel() {
 			properties.elem_title = false;
 			break;
 
-		case 'my_elem_text':			
-			
-		
+		case 'my_elem_text':
 			properties.elem_maxlength = true;
 			properties.elem_example = true;
 			properties.elem_mask = true;
@@ -350,61 +332,45 @@ function show_hide_elem_panel() {
 			properties.elem_email = true;
 			properties.elem_url = true;	
 			properties.elem_required = true;
-		
-		
-			
 			break;
 
 		case 'my_elem_textarea':
 			properties.elem_maxlength = true;
 			properties.elem_example = true;			
-			properties.elem_required = true;
-			
+			properties.elem_required = true;			
 			break;
 
 		case 'my_elem_file':
 			
 			properties.elem_required = true;			
 			properties.elem_file_accept = true;
-			properties.elem_file_size = true;	
-			
+			properties.elem_file_size = true;
 			break;
 
 		case 'my_elem_date':
 			properties.elem_maxlength = true;
 			properties.elem_example = true;
 			properties.elem_mask = true;
-			properties.elem_digits = true;
-			
+			properties.elem_digits = true;			
 			properties.elem_required = true;
-			
 			break;
 
 		case 'my_elem_select':
-			
-			
-			
-			properties.elem_required = true;			
-
+			properties.elem_required = true;
 			properties.elem_select_default = true;
 			properties.elem_del_options_select = true;
 			properties.elem_add_options_val = true;
-			properties.elem_onchange = true;
-			
+			properties.elem_onchange = true;			
 			break;
 
 		case 'my_elem_checkbox':
-			
 			properties.elem_example = true;
-			
 			properties.elem_required = true;
 			properties.elem_onchange = true;
-			
 			break;
 
 		case 'my_elem_radio':
 			properties.elem_example = true;
-			
 			properties.elem_required = true;
 			properties.elem_onchange = true;
 			break;
@@ -418,7 +384,6 @@ function show_hide_elem_panel() {
 			break;
 	}
 	
-	
 	$("#elem_50").parent().show();
 	for (var keyVar in properties ) {
 		if (properties[keyVar]) $("#" + keyVar).parent().show();
@@ -426,113 +391,100 @@ function show_hide_elem_panel() {
 
 }
 
-//Функция загрузки сохраненной формы на сервере
+//Отправка JSON на сервер и сохранение в БД
 function save_form(){
-	var cook = '';
 	
 	for (var i = 0; i < count_step_tab; i++) {
 		$("#step_" + (i + 1) + " .form_elem").attr('step', (i + 1));
 	}
-	
-
+	var obj_mass = new Array();
 	$(".form_elem").each(function(){
-		
-		
-		var js = $(this).attr('json');
-		
+		var js = $(this).attr('json');		
 		var obj = JSON.parse(js);
 		obj.step = $(this).attr('step');
-		var js = JSON.stringify(obj);
-		cook += js + "|||";
-
+		obj_mass.push(obj);
 	});
-	if (cook == '') cook = 'true';
 	
-	
+	var js = JSON.stringify(obj_mass);
+
 	$("#progressbar").show();
-	$.post("index.php", {save: cook}, function(data) {		
+	$.post("index.php", {json: js}, function(data) {		
 		$("#progressbar").hide();
 	});
-
-
 };
 
-//Функция сохранения формы на сервере
+//Загрузка JSON с сервера и построение формы
 function load_form(){
 	var cook = "{}";
 
-$.ajax({
-	url: "index.php",
-	type : "POST",
-	data : {load: "true"},
-	dataType: "text",
-	success: function(data){
-		
-		cook = data;
-		if (!cook) cook = "";
-		var arr = new Array();
-		arr = cook.split('|||');	
+	$.ajax({
+		url: "index.php",
+		type : "POST",
+		data : {load: "true"},
+		dataType: "text",
+		success: function(data){
 
-		for (i = 0; i < arr.length-1; i++) {		
-			var abs = JSON.parse(arr[i]);
-			var st = abs.step;
+			var arr = JSON.parse(data);
 			
-			while (st > count_step_tab) {
-				add_step_tab();
+
+			for (i = 0; i < arr.length; i++) {		
+				var abs = arr[i];
+				var st = abs.step;
+				
+				while (st > count_step_tab) {
+					add_step_tab();
+				}
+				
+				$("#step_" + st).append(get_elem_html(abs));
 			}
+			$( "#step_tabs" ).tabs( "select" , 0 );
+			current_step_tab = "#step_1";
 			
-			$("#step_" + st).append(get_elem_html(abs));
+			$("#content").sortable({
+				items: '.form_elem',
+				stop:  function(event, ui) {}
+			});
+			
+			$( ".datepicker" ).datepicker({
+				showOn: "button",
+				buttonImage: "images/calendar.gif",
+				buttonImageOnly: true
+			});
+			
+			$( ".elem_button" ).draggable({
+				connectToSortable: "#content",
+				helper: "clone",
+				revert: "invalid",
+				addClasses: false,
+				start: function (event, ui) {
+					var b = new Object();
+					b.type = $(this).attr('id');
+					
+					var html_ = get_elem_html(b);
+					
+					$("#tabs-1 a.elem_button").each(function(){
+						if ($(this).css('position') == 'absolute') {
+							
+							$(this).attr('class', '');
+							$(this).html(html_);
+							$(this).css('width', '400px');
+						}
+					});
+					
+					//$(html_).replaceAll($(this).hide());
+				},
+				
+				stop: function (event, ui) {
+					var b = new Object();
+					b.type = $(this).attr('id');				
+					var html_ = get_elem_html(b);
+
+					
+					$(html_).replaceAll($("#content a.elem_button"));
+				}				
+			});
 		}
-		$( "#step_tabs" ).tabs( "select" , 0 );
-		current_step_tab = "#step_1";
-		$("#content").sortable({
-			items: '.form_elem',
-			stop:  function(event, ui) {}
-		});
-		
-		$( ".datepicker" ).datepicker({
-			showOn: "button",
-			buttonImage: "images/calendar.gif",
-			buttonImageOnly: true
-		});
-		
-		$( ".elem_button" ).draggable({
-			connectToSortable: "#content",
-			helper: "clone",
-			revert: "invalid",
-			addClasses: false,
-			start: function (event, ui) {
-				var b = new Object();
-				b.type = $(this).attr('id');
-				
-				var html_ = get_elem_html(b);
-				
-				$("#tabs-1 a.elem_button").each(function(){
-					if ($(this).css('position') == 'absolute') {
-						
-						$(this).attr('class', '');
-						$(this).html(html_);
-						$(this).css('width', '400px');
-					}
-				});
-				
-				//$(html_).replaceAll($(this).hide());
-			},
-			
-			stop: function (event, ui) {
-				var b = new Object();
-				b.type = $(this).attr('id');				
-				var html_ = get_elem_html(b);
-
-				
-				$(html_).replaceAll($("#content a.elem_button"));
-			}
-			
-		});
-		
-		
-		
-	}});
+	});
 	
 };
 
@@ -546,6 +498,7 @@ $.ajax({
 }
 */
 
+//Document_Ready
 $(document).ready(function(){
 	
 	load_form();
@@ -553,50 +506,46 @@ $(document).ready(function(){
 	jQuery('#sideLeft').containedStickyScroll({
         closeChar: '' 
     });
-	
-	
-	//$( "#progressbar" ).progressbar();
-	
+		
+	//Добавление jQuery UI Button к элементам
 	$( ".elem_button, button, .button").button({
-            icons: {
-                primary: "ui-icon-play"
-            }
-        });
+		icons: {
+			primary: "ui-icon-play"
+		}
+    });
+	
+	//Добавление jQuery UI Tabs к элементам
 	$( "#tabs" ).tabs({
-	   show: function(event, ui) {show_hide_elem_panel();}
+		show: function(event, ui) {show_hide_elem_panel();}
 	});
 	
+	//Добавление jQuery UI Tabs к элементам
 	$( "#step_tabs" ).tabs({
-	   select: function(event, ui) {
-		   $(".form_elem").removeClass('ui-widget-header ui-corner-all');
-		   $(".form_elem[sel=sel]").removeAttr('sel');
-		   show_hide_elem_panel();
-		   $( "#tabs" ).tabs( "select" , 0 );
-		   if(ui.panel.id == "step_delete") {
-			   
-			   delete_step_tab();
-			  return false;
-		   }
-		   if (ui.panel.id == "step_add") {
-			   
+		select: function(event, ui) {
+			$(".form_elem").removeClass('ui-widget-header ui-corner-all');
+			$(".form_elem[sel=sel]").removeAttr('sel');
+			show_hide_elem_panel();
+			$( "#tabs" ).tabs( "select" , 0 );
+			if(ui.panel.id == "step_delete") {			   
+				delete_step_tab();
+				return false;
+			}
+			if (ui.panel.id == "step_add") {			   
 			  add_step_tab();
 			  return false;
-		   } else {
+			} else {
 			   current_step_tab = "#" + ui.panel.id;
-		   }
-	   }
+			}
+		}
 	});
 	
-	
-	
-	
-//Сохранение элемента формы при редактировании - для чекбоксов
+	//Сохранение элемента формы (добавление атрибута JSON к DIV`у элемента) при редактировании - для чекбоксов
 	$("#tabs-2 input[type=checkbox]").live('change keyup keydown', function(){
 		$("#save_elem").click();
 	});
 
-//Сохранение элемента формы при редактировании - нажатие клавиши в полях
-	$("#tabs-2 input, #tabs-2 select, #tabs-2 textarea").live('change keyup', function(){
+	//Сохранение элемента формы (добавление атрибута JSON к DIV`у элемента) при редактировании - нажатие клавиши в полях
+	$("#tabs-2 input, #tabs-2 select, #tabs-2 textarea").live('change', function(){
 		var ch = true;
 		if ($(this).attr('id') == 'elem_del_options_select') ch = false;
 		if ($(this).attr('id') == 'elem_add_options_val') ch = false;
@@ -605,46 +554,43 @@ $(document).ready(function(){
 		if ($(this).val() && (ch)) {
 			$("#save_elem").click();
 		}		
-	});
+	});	
 	
+	//При изменении Id меняется и Name
 	$("#elem_id").live('change keyup', function(){
 		$("#elem_name").val('field[' + $("#elem_id").val() + ']');
 	});
 
-//Нажатие на заголовок страницы
+	//Нажатие на заголовок страницы
 	$(".header").click(function(){
 		//alert(1);	
 		$(".form_elem").removeClass('ui-widget-header ui-corner-all');
 		$(".form_elem").removeAttr('sel');
 		$( "#tabs" ).tabs( "select" , 0 );
 		show_hide_elem_panel();
-	});
+	});	
 	
-	
-//Добавление элемента к (#content) - нажатие на кнопку элемента на панели интструментов
+	//Добавление элемента к (#content) - нажатие на кнопку элемента на панели интструментов
 	$(".elem_button").click(function(){
 
 		var obj = new Object();
 		obj.type = $(this).attr("id");
 		var html = get_elem_html(obj);
+		
+		//Добавление элемента после выделенного или в конец шага
 		if ($(".form_elem[sel=sel]").length > 0) {
 			$(".form_elem[sel=sel]").after(html);
 		} else {
-			
-			
-			
 			$(current_step_tab).append(html);
 		}
+		
 		$(".form_elem").removeClass('ui-widget-header ui-corner-all');
 		$(".form_elem[sel=sel]").removeAttr('sel');
 		
 		$("#content").sortable({
-				items: '.form_elem',
-				stop:  function(event, ui) {}
-			});
-		
-		$("#save_elem").click();
-		
+			items: '.form_elem',
+			stop:  function(event, ui) {}
+		});	
 		
 		$( ".datepicker" ).datepicker({
 			showOn: "button",
@@ -652,40 +598,34 @@ $(document).ready(function(){
 			buttonImageOnly: true
 		});
 		
+		$("#save_elem").click();		
 	});
 	
-		
-
-//фокус на элемент формы
+	//фокус на элемент формы
 	$(".form_elem").live('mouseover', function(){
 		$(this).addClass("ui-widget-header ui-corner-all");
 	});
 	
-//потеря фокуса с элемента формы	
+	//потеря фокуса с элемента формы	
 	$(".form_elem").live('mouseout', function(){
 		if ($(this).attr('sel') != 'sel') {
 			$(this).removeClass("ui-widget-header ui-corner-all");
 		}		
 	});
 	
-//нажатие на элемент формы в "#content"
+	//нажатие на элемент формы в "#content"
 	$(".form_elem").live('click', function(){
+		$("#save_elem").click();
 		$(".form_elem").removeClass('ui-widget-header ui-corner-all');
 		$(".form_elem").removeAttr('sel');
 		//$(this).addClass('form_elem_sel');
 		$(this).addClass("ui-widget-header ui-corner-all");
-		$(this).attr('sel', 'sel');
-		
+		$(this).attr('sel', 'sel');		
 		$( "#tabs" ).tabs( "select" , 1 );
-		
-		
-		
-		
-		show_hide_elem_panel();
-	
+		show_hide_elem_panel();	
 	});
 	
-//кнопка "Сохранить элемент" на панели редактирования
+	//кнопка "Сохранить элемент" на панели редактирования
 	$("#save_elem").click(function(){
 		
 		var b = new Object();
@@ -716,8 +656,8 @@ $(document).ready(function(){
 		if ($("#elem_onclick").attr('checked') == "checked") b.elem_onclick = true;
 		if ($("#elem_bold").attr('checked') == "checked") b.elem_bold = true;
 		if ($("#elem_italic").attr('checked') == "checked") b.elem_italic = true;
-		
-		
+		if ($("#elem_onchange").attr('checked') == 'checked') b.elem_onchange = true;
+		if ($("#elem_50").attr('checked') == 'checked') b.elem_50 = true;
 		
 		b.select_options = new Array();
 		var i = 0;
@@ -730,66 +670,44 @@ $(document).ready(function(){
 			i++;
 		});
 		
-		if ($("#elem_onchange").attr('checked') == 'checked') {
-			b.elem_onchange = true;
-		} else {
-			b.elem_onchange = false;
-		}
 		
-		if ($("#elem_50").attr('checked') == 'checked') {
-			b.elem_50 = true;
-		} else {
-			b.elem_50 = false;
-		}
-		
-		//$(".form_elem[sel=sel]").hide();
 		var for_click = $(".form_elem[sel=sel]");
 		b.type = $(".form_elem[sel=sel]").attr('elem_type');
-
 		
 		var html_ = get_elem_html(b);
 		
-		//$("#content").append(html_);
-		//html_ = html_.replace('T', 'e');
-		//alert(html_);
-		//$(".form_elem[sel=sel]").remove();
-		//$("#content").append(html_);
-		$(html_).replaceAll($(".form_elem[sel=sel]")).click();
-		
+		$(html_).replaceAll($(".form_elem[sel=sel]")).click();		
 		
 		$( ".datepicker" ).datepicker({
 			showOn: "button",
 			buttonImage: "images/calendar.gif",
 			buttonImageOnly: true
 		});
-		
-
 	});
 	
-	
-	
-//Удаление выбранного элемента формы
+	//Удаление выбранного элемента формы
 	$("#delete_elem").click(function(){		
 		$(".form_elem[sel=sel]").remove();		
 	});
 	
-//Добавление <OPTION> к <SELECT>
+	//Добавление <OPTION> к <SELECT>
 	$("#elem_add_options").click(function(){
 		$("#elem_del_options_select").append("<option value='" + $("#elem_add_options_val").val() + "'>" + $("#elem_add_options_text").val() + "</option>");
 		$("#save_elem").click();
 	});
 	
-//Удаление <OPTION> из <SELECT>	
+	//Удаление <OPTION> из <SELECT>	
 	$("#elem_del_options").click(function(){
 		$("#elem_del_options_select :selected").remove();
 		$("#save_elem").click();
 	});
 	
-//Нажатие "Сохранить форму"
+	//Нажатие "Сохранить форму"
 	$("#save_form").click(function(){
 		save_form();
 	});
 	
+	//получение HTML кода формы от сервера
 	$("#download_form").click(function(){
 		
 		$( "#download_dialog" ).dialog({
@@ -809,13 +727,13 @@ $(document).ready(function(){
 		});
 		
 		$.ajax({
-	url: "get_html.php",
-	type : "GET",
-	dataType: "text",
-	success: function(data){
-		$( "#download_dialog" ).html("<xmp>" + data + "</xmp>");
-	}
-	});
+			url: "get_html.php",
+			type : "GET",
+			dataType: "text",
+			success: function(data){
+				$( "#download_dialog" ).html("<xmp>" + data + "</xmp>");
+			}
+		});
 		
 		//$( "#download_dialog" ).load("get_html.php");
 	});
