@@ -1,5 +1,5 @@
 ﻿<?php
-
+  
 class db {
 	
 	static private $mysql_host = "localhost";
