@@ -3,7 +3,7 @@
 	$smarty = new Smarty;
 	
 	if ($_GET['page'] == 'form_edit') {
-		$smarty->display('tpl/form_edit.tpl');
+		$smarty -> display('tpl/form_edit.tpl');
 	}
 	
 ?>
