@@ -22,8 +22,7 @@ class user {
 
 		if($captcha_check) {
 			db::db_connect();
-			$password_md5 = md5($password.md5($this -> salt));
-			$this->sql = "SELECT * from users WHERE login = '$login' and password = '$password_md5'";
+			$this->sql = "SELECT * from users WHERE login = '$login' and password = 'md5(".$password." md5(".$this -> salt."))'";
 			$result = db::mq($this->sql);
 			if ($r = mysql_fetch_assoc($result)) {
 				$_SESSION['id'] = $r['id'];
@@ -39,7 +38,12 @@ class user {
 	
 	// Выходим из сайта
 	public function logout ($login) {
-		
+		if (!isset($_SESSION)) session_start();
+		if (isset($_SESSION)&& count($_SESSION)>0) {
+			foreach ($_SESSION as $k => $v) {
+				unset($_SESSION[$k]);
+			}
+		}
 	}
 	
 	
