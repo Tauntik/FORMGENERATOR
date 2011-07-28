@@ -1,11 +1,11 @@
-﻿<?php
+<?php
   
 class db {
 	
 	static private $mysql_host = "localhost";
 	static private $mysql_login = "root";
 	static private $mysql_password = "";
-	static private $mysql_database = "fg";
+	static private $mysql_database = "formgenerator";
 	static private $charset = "cp1251";
 
 	// Подключаемся к базе

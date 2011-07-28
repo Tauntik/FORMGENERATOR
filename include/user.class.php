@@ -1,11 +1,10 @@
-﻿<?php
+<?php
 
 include("db.class.php");
 
 class user {	
 	
 	private $sql = ''; 		// запрос в БД.
-	private $user = array();	// Массив с данными о пользователе.
 	private $salt = 'fg'; 		// запрос в БД.
 	
 	// Авторизация на сайт
@@ -20,16 +19,20 @@ class user {
 				}
 			}
 		}
-		
+
 		if($captcha_check) {
 			db::db_connect();
-			$this->sql = "SELECT * from users WHERE login = '$login' and password = 'md5(".$password."md5(".$salt."))'";
+			$password_md5 = md5($password.md5($this -> salt));
+			$this->sql = "SELECT * from users WHERE login = '$login' and password = '$password_md5'";
 			$result = db::mq($this->sql);
-			while ($r = mysql_fetch_assoc($result)) {
-				$this->user[] = $r;
+			if ($r = mysql_fetch_assoc($result)) {
+				$_SESSION['id'] = $r['id'];
+				$_SESSION['email'] = $r['email'];
+				return true;	// Все успешно, возвращаем правду
 			}
-			$_SESSION['id'] = $this->user['id'];
-			return true;	// Все успешно, возвращаем правду
+			else {
+				return false;		// Что-то не сощлось. Юзер - лох.
+			}
 		}
 		return false;		// Что-то не сощлось. Юзер - лох.
 	}

@@ -4,7 +4,7 @@ if (!isset($_SESSION)) session_start();
 header("Content-Type: image/png");
  
 // создаем картинку размером 130X40
-$img=imagecreatetruecolor(220, 50) or die('Cannot create image');
+$img=imagecreatetruecolor(150, 50) or die('Cannot create image');
  
 // заполняем фон картинки белым цветом
 imagefill($img, 0, 0, 0xFFFFFF);
@@ -16,10 +16,10 @@ imagefill($img, 0, 0, $color);*/
 //imagearc($img, rand(0,220),rand(0,50),rand(1,220),rand(1,50),0,50,0x000);
 
 // Черночки
-for($i = 0; $i < 38; $i++) {
+for($i = 0; $i < 30; $i++) {
 	$ink = imagecolorallocate($img, rand(0,255), rand(1,255), rand(1,255));
-	$x = rand(1,219);
-	$x2 = rand(1,219);
+	$x = rand(1,149);
+	$x2 = rand(1,149);
 	$y = rand(1,49);
 	$y2 = rand(1,49);
 	//imageline($img, 0, $y, 219, $y,$ink);
@@ -47,7 +47,7 @@ $fonts = array(
 //$font = './BIRCH_C.TTF';
 
 // выводим одну цифру за один проход цикла (всего 5-6 цифр)
-$count_num = rand(5,6);
+$count_num = rand(3,4);
 while ($i++ <= $count_num)
 {
 $font = $fonts[rand(0, sizeof($fonts)-1)];
