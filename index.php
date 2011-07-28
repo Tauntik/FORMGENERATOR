@@ -11,7 +11,7 @@
 	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
 	
 	switch ($page) {
-		case 'form_egit':
+		case 'form_edit':
 			if(isset($_SESSION['id'])) {
 				$smarty -> display('tpl/form_edit.tpl');
 			}
