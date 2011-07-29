@@ -2,6 +2,7 @@
 //_TODO К <title> выбор Bold, Align, H1-H6
 //_TODO перетаскивание элемента при добавлении
 //_TODO бегующий курсор
+//_TODO добавление множества колонок
 
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
@@ -15,7 +16,7 @@
 //TODO при добавлении элемента сделать чтобы он выделялся, чтобы последующие элементы вставлялись после него
 //TODO проверка на повторяющиеся id
 //TODO сделать пример заполнения для <SELECT> <CHECKBOX>
-
+//TODO переписать function get_elem_html(obj) для возврата не текста а объекта jQuery
 
 //TODO загрузка в SELECT файла с OPTION
 //TODO сделать готовые решения для масок
@@ -111,29 +112,35 @@ function get_elem_html(obj) {
 	
 	json = json.replace(/ /g, '&nbsp;');
 	
+	
+	var el_col = obj.elem_columns;
+	if (!el_col) el_col = 1;
+	var percent = (100 / el_col) - 2;
+	var form_elem = jQuery('<div>', {
+						elem_type: obj.type,
+						'class': 'form_elem',
+						json: json,
+						number: elem_count,
+						css: {
+							display: 'inline-table',
+							width: percent + '%'
+						}
+					});
+	
+	var form_elem_title = jQuery('<div>', {
+								'class': 'form_elem_title',
+								html: obj.elem_title
+							});
+	var form_elem_required = jQuery('<span>', {
+								'class': 'form_elem_required',
+								html: required
+							}).appendTo(form_elem_title);
+	
 	//В зависимости от типа объекта возвращает HTML элемента
 	switch (obj.type) {			
-		case 'my_elem_title':
-			if (!obj.elem_align) obj.elem_align = "left";
-			if (!obj.elem_h) obj.elem_h = "span";
-			
-			
-			if (!obj.elem_bold) {
-				obj.elem_bold = "normal";
-			} else {
-				obj.elem_bold = "bold";
-			}
-			
-			if (!obj.elem_italic) {
-				obj.elem_italic = "normal";
-			} else {
-				obj.elem_italic = "italic";
-			}
-			
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_block_title_small" align="' + obj.elem_align + '" style="font-style: ' + obj.elem_italic + ';font-weight: ' + obj.elem_bold + ';">' + '<' + obj.elem_h + '>' + obj.elem_title + '<span class="form_elem_required">' + required + '</span>' + '</' + obj.elem_h + '>' + '</div></div>';
-			break;
-
+		
 		case 'my_elem_title_small':
+			
 			if (!obj.elem_align) obj.elem_align = "left";
 			if (!obj.elem_h) obj.elem_h = "span";
 			if (!obj.elem_bold) {
@@ -147,47 +154,91 @@ function get_elem_html(obj) {
 			} else {
 				obj.elem_italic = "italic";
 			}
-			
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_block_title_small" align="' + obj.elem_align + '" style="font-style: ' + obj.elem_italic + ';font-weight: ' + obj.elem_bold + ';">' + '<' + obj.elem_h + '>' + obj.elem_title + '<span class="form_elem_required">' + required + '</span>' + '</' + obj.elem_h + '>' + '</div></div>';
+			jQuery('<div>', {
+				'class': 'form_block_title_small',
+				'align': obj.elem_align,
+				css: {
+					'font-style': obj.elem_italic,
+					'font-weight': obj.elem_bold
+				}
+			}).append(jQuery('<' + obj.elem_h + '>', {
+							html: obj.elem_title
+						}
+			).append(form_elem_required).appendTo(form_elem)).appendTo(form_elem);
+
 			break;
 
 		case 'my_elem_hr':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_block_title">' + '<hr/>' + '</div></div>';
+		
+			jQuery('<hr />').appendTo(jQuery('<div>', {
+										'class': 'form_block_title'
+									}).appendTo(form_elem));
+			
 			break;
 
 		case 'my_elem_text':
-			var el_col = obj.elem_columns;
-			if (!el_col) el_col = 1;
-			var percent = (100 / el_col) - 2;
-			//alert(percent);
-			var elem_50 = '';
-			//if (obj.elem_50) elem_50 = ' elem_50';
-			return '<div style="display: inline-table; width: ' + percent + '%;" elem_type="' + obj.type + '" class="form_elem' + elem_50 + '" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><input type="text" name="' + name + '" id="' + id + '"  class="" /></div>';
+			form_elem_title.appendTo(form_elem);
+			jQuery('<input>', {
+				'type': 'text',
+				'name': name,
+				'id': id
+			}).appendTo(form_elem);
+
 			break;
 
 		case 'my_elem_textarea':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><textarea type="text" name="' + name + '" id="' + id + '"  class="" ></textarea></div>';
+			form_elem_title.appendTo(form_elem);
+			jQuery('<textarea>', {
+				'name': name,
+				'id': id
+			}).appendTo(form_elem);
+			
 			break;
 
 		case 'my_elem_file':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><input type="file" name="' + name + '" id="' + id + '"  class="" /></div>';
+			form_elem_title.appendTo(form_elem);
+			jQuery('<input>', {
+				'type': 'file',
+				'name': name,
+				'id': id
+			}).appendTo(form_elem);
+			
 			break;
 
 		case 'my_elem_date':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><input type="text" name="' + name + '" id="' + id + '"  class="datepicker" /></div>';
+			form_elem_title.appendTo(form_elem);
+			jQuery('<input>', {
+				'type': 'text',
+				'name': name,
+				'id': id,
+				'class': "datepicker"
+			}).appendTo(form_elem);
+			
 			break;
 
 		case 'my_elem_select':
-			var opt = '';
+			
+			form_elem_title.appendTo(form_elem);
+			var sel_el = jQuery('<select>', {
+				'name': name,
+				'id': id
+			});
+			
+
 			
 			for (var i = 0; i < obj.select_options.length; i++) {
-				//alert(i);
-				var sel = "";
-				if (obj.select_default == obj.select_options[i].val) sel = 'selected="selected"';
-				opt += '<option ' + sel + ' value="' + obj.select_options[i].val + '">' + obj.select_options[i].text + '</option>';
+				var opt = jQuery('<option>', {
+					'value': obj.select_options[i].val,
+					html: obj.select_options[i].text
+				});
+				if (obj.select_default == obj.select_options[i].val) opt.attr('selected', 'selected');
+				
+				sel_el.append(opt);
 			}
 			
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><select name="' + name + '" id="' + id + '"  class="" >' + opt + '</select></div>';
+			sel_el.appendTo(form_elem);
+			
+			//return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><select name="' + name + '" id="' + id + '"  class="" >' + opt + '</select></div>';
 			break;
 
 		case 'my_elem_checkbox':
@@ -205,6 +256,8 @@ function get_elem_html(obj) {
 		default:
 			break;
 	}
+	
+	return form_elem;
 }
 
 //Функция отображает/скрывает элементы редактирования полей формы в зависимости от типа выбранного поля
@@ -412,7 +465,7 @@ function save_form(){
 	var js = JSON.stringify(obj_mass);
 
 	$("#progressbar").show();
-	$.post("index.php", {json: js}, function(data) {		
+	$.post("index.php", {request: "save", json: js, 'name': 'test', 'sub_projectid': '1'}, function(data) {		
 		$("#progressbar").hide();
 	});
 };
@@ -424,7 +477,10 @@ function load_form(){
 	$.ajax({
 		url: "index.php",
 		type : "POST",
-		data : {load: "true"},
+		data : {request: "load",
+				'name': 'test',
+				'sub_projectid': '1'
+		},
 		dataType: "text",
 		success: function(data){
 
