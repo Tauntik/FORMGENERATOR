@@ -139,7 +139,7 @@ class form {
 		$this -> sql = "SELECT id, name FROM forms WHERE sub_projectid = $sub_projectid";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
-			$forms[] = $r;
+			$forms[] = "<option value='{$r['id']}'>{$r['name']}</option>;
 		}
 		return $forms;
 	}

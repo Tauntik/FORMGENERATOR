@@ -71,7 +71,7 @@
 	}
 
 		// DELETE
-	$form -> get_html_gosuslugi( "test", 1);
+	//$form -> get_html_gosuslugi( "test", 1);
 		// DELETE
 		
 	switch ($page) {
@@ -100,7 +100,7 @@
 					exit();
 				}
 				$projects = $form -> get_projects();
-				$smarty -> assign ('projects',$projects);
+				$smarty -> assign ('projects', $projects);
 				$smarty -> display('tpl/form_browse.tpl');
 			}
 			else {
