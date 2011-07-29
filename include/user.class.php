@@ -22,7 +22,8 @@ class user {
 
 		if($captcha_check) {
 			db::db_connect();
-			$this->sql = "SELECT * from users WHERE login = '$login' and password = 'md5(".$password." md5(".$this -> salt."))'";
+			$password_md5 = md5($password.md5($this -> salt));
+			$this->sql = "SELECT * from users WHERE login = '$login' and password = '$password_md5'";
 			$result = db::mq($this->sql);
 			if ($r = mysql_fetch_assoc($result)) {
 				$_SESSION['id'] = $r['id'];
@@ -46,6 +47,18 @@ class user {
 		}
 	}
 	
+	// Получаем массив $user текущего пользователя
+	public function get_array_user($user_id) {
+		$user = array();
+		db::db_connect();
+		$this->sql = "SELECT * from users WHERE id = '$user_id'";
+		$result = db::mq($this->sql);
+		if ($r = mysql_fetch_assoc($result)) {
+			$user = $r;
+		}
+		if(isset($user['password'])) unset ($user['password']);
+		return $user;
+	}
 	
 	// Изменяем профиль пользователя
 	public function change_profile ($login) {

@@ -66,7 +66,6 @@ $font = $fonts[rand(0, sizeof($fonts)-1)];
    $array[] = $rnd;
 }
 	$_SESSION['random_string'] = $random_string;
- 
 //Ќе забудьте $sum записать в таблицу как STR1
  
 // выводим готовую картинку в формате PNG
