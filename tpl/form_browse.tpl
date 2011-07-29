@@ -46,6 +46,7 @@
 		</script>
 		Выберете проект: 
 		<select id="projects">
+			<option value="">не выбрано</option>
 			{foreach from=$projects item=item}
 				<option value="{$item.id}">{$item.name}</option>
 			{/foreach}
