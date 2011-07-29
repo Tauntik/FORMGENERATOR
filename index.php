@@ -8,11 +8,16 @@
 	require_once ('libs/smarty/Smarty.class.php');
 	require_once ('include/user.class.php');
 	require_once ('include/form.class.php');
+	
+	$smarty = new Smarty;
+	$smarty -> template_dir = 'tpl/';
+	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
+	$form = new form();
+	$data     = new user();
 
 	// Обрабатываем различные ответы от клиента, переданные в POST массиве
 	$request = isset ($_POST['request']) ? $_POST['request'] : '';
 	if ($request) {
-	$form = new form();
 		switch ($request) {
 			case 'save':
 				// TODO: реализовать на клиенте отправку мне имени и id ведомства
@@ -45,19 +50,27 @@
 				}
 			break;
 			
+			case 'get_sub_projects':
+				$id_project = isset($_POST['id_project']) ? $_POST['id_project'] : '';
+				$sub_projects = get_sub_projects($id_project);
+				echo ($sub_projects);
+				exit();
+			break;
+			
+			case 'get_forms':
+				$id_sub_project = isset($_POST['id_sub_project']) ? $_POST['id_sub_project'] : '';
+				$forms = get_forms($id_sub_project);
+				echo ($forms);
+				exit();
+			break;
+			
 			default: 
 			
 			break;
 		}
 	}
-	
-	$smarty = new Smarty;
-	$smarty -> template_dir = 'tpl/';
-	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
-	$data     = new user();
 
 		// DELETE
-	$form = new form();
 	$form -> get_html_gosuslugi( "test", 1);
 		// DELETE
 		
@@ -81,13 +94,13 @@
 		
 		case 'form_browse':
 			if(isset($_SESSION['id'])) {
-				$user = $data -> get_array_user($_SESSION['id']);
 				if(!count($user)) {
 					$smarty -> assign('error', 'Такого пользователя не существует!');
 					$smarty -> display('tpl/error.tpl');
 					exit();
 				}
-				$smarty -> assign ('user',$user);
+				$projects = $form -> get_projects();
+				$smarty -> assign ('projects',$projects);
 				$smarty -> display('tpl/form_browse.tpl');
 			}
 			else {
