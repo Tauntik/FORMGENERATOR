@@ -7,10 +7,10 @@ class form {
 	private $sql = '';		// Строка запроса
 
 	// Сохранить форму, которую нам отправил пользователь
-	public function save_form ($name, $json, $sub_projectid) {
+	public function save_form ($formid, $json) {
 		if (!isset($_SESSION)) session_start();
 		db::db_connect();
-		$this -> sql = "INSERT INTO forms SET name = '$name', json = '$json', userid = '{$_SESSION['id']}', sub_projectid = '$sub_projectid' on duplicate key update json = '$json'";
+		$this -> sql = "UPDATE forms SET json = '$json' WHERE id = $formid ";
 		if (db::mq($this -> sql) === true) {
 			return true;
 		}
@@ -18,10 +18,19 @@ class form {
 			return false;
 		}
 	}
+	
+	public function create_form ($name, $sub_projectid) {
+		if (!isset($_SESSION)) session_start();
+		db::db_connect();
+		$this -> sql = "INSERT INTO forms SET name = '$name', json = '', userid = '{$_SESSION['id']}', sub_projectid = '$sub_projectid'";
+		db::mq($this -> sql);
+		$formid = mysql_insert_id();
+		return $formid;
+	}
 
 	// Взять из БД форму и отдать ее клиенту
-	public function load_form ($name, $sub_projectid) {
-		$json = $this -> get_json($name, $sub_projectid);
+	public function load_form ($formid) {
+		$json = $this -> get_json($formid);
 		return $json;	// Возвращаем $json строку или false
 	}
 
@@ -31,17 +40,17 @@ class form {
 	}
 	
 	// Отдаем пользователю html код формы
-	public function get_html ($name, $sub_projectid) {
-		$json = $this -> get_json($name, $sub_projectid);
+	public function get_html ($formid) {
+		$json = $this -> get_json($formid);
     	$array_json = json_decode($json);
 		print_r($array_json);
 	}
 	
 	// Отдаем пользователю html код формы без заголовков в стиле gosuslugi.ru
-	public function get_html_gosuslugi ($name, $sub_projectid) {
+	public function get_html_gosuslugi ($formid) {
 		$count_elem_on_tr = 0;		// Количество элементов на странице
 		$html = '<table>';
-		$json = $this -> get_json($name, $sub_projectid);
+		$json = $this -> get_json($formid);
     	$array_json = json_decode($json);
 		foreach ($array_json as $k => $field) {
 			$count_elem_on_tr++ ;
@@ -89,9 +98,9 @@ class form {
 	}
 	
 	// Получает json
-	private function get_json ($name, $sub_projectid) {
+	private function get_json ($formid) {
 		db::db_connect();
-		$this -> sql = "SELECT json FROM forms WHERE name = '$name' and sub_projectid='$sub_projectid'";
+		$this -> sql = "SELECT json FROM forms WHERE id = '$formid'";
 		$res = db::mq($this -> sql);
 		if ($r = mysql_fetch_assoc($res)) {
 			return $r['json'];
@@ -100,6 +109,7 @@ class form {
 			return false;
 		}
 	}
+	
 	// Получить все доступные проекты
 	public function get_projects () {
 		$projects = array();
@@ -125,6 +135,7 @@ class form {
 	}
 	
 	// Получить все доступные формы пользователю в зависимости от того, к каким проектам он привязан
+	// TODO реализовать это
 	public function get_forms ($sub_projectid) {
 		$forms = "<option value='0'>Не выбрано</option>";
 		db::db_connect();

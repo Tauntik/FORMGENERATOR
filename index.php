@@ -21,11 +21,10 @@
 		switch ($request) {
 			case 'save':
 				// TODO: реализовать на клиенте отправку мне имени и id ведомства
-				$name = isset ($_POST['name']) ? $_POST['name'] : '';
+				$formid = isset ($_POST['form_id']) ? $_POST['form_id'] : '';
 				$json = isset ($_POST['json']) ? $_POST['json'] : '';
-				$sub_projectid = isset ($_POST['sub_projectid']) ? $_POST['sub_projectid'] : '';
-				if ($name && $json && $sub_projectid) {
-					$form -> save_form ($name, $json, $sub_projectid);
+				if ($formid && $json) {
+					$form -> save_form ($formid, $json);
 					if (!$form) {
 						echo("Ошибка при сохраниении формы.");
 					}
@@ -37,10 +36,9 @@
 			break;
 		
 			case 'load':
-				$name = isset ($_POST['name']) ? $_POST['name'] : '';
-				$sub_projectid = isset ($_POST['sub_projectid']) ? $_POST['sub_projectid'] : '';
-				if ($name && $sub_projectid) {
-					$json = $form -> load_form ($name, $sub_projectid);
+				$formid = isset ($_REQUEST['form_id']) ? $_REQUEST['form_id'] : '';
+				if ($formid) {
+					$json = $form -> load_form ($formid);
 					echo($json);	// Передаем клиенту JSON
 					exit();
 				}
@@ -78,14 +76,30 @@
 		
 		case 'form_edit':
 			if(isset($_SESSION['id'])) {
+				$json = '';
 				$user = $data -> get_array_user($_SESSION['id']);
 				if(!count($user)) {
 					$smarty -> assign('error', 'Такого пользователя не существует!');
 					$smarty -> display('tpl/error.tpl');
 					exit();
 				}
-				$smarty -> assign ('user',$user);
+				if (isset($_REQUEST['form_id']) && $_REQUEST['form_id']) {
+					$form -> load_form ($_REQUEST['form_id']);
+				}
+				$smarty -> assign ('user', $user);
 				$smarty -> display('tpl/form_edit.tpl');
+			}
+			else {
+				header("Location: ?page=login");
+			}
+		break;
+		
+		case 'form_create':
+			if(isset($_SESSION['id'])) {
+				$name = isset($_REQUEST['new_form_name']) ? $_REQUEST['new_form_name'] : '';
+				$sub_projectid = isset($_REQUEST['id_sub_project']) ? $_REQUEST['id_sub_project'] : '';
+				$formid = $form -> create_form ($name, $sub_projectid);				
+				header("Location: ?page=form_edit&form_id=$formid");
 			}
 			else {
 				header("Location: ?page=login");
