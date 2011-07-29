@@ -224,33 +224,49 @@ function get_elem_html(obj) {
 				'id': id
 			});
 			
-
-			
 			for (var i = 0; i < obj.select_options.length; i++) {
 				var opt = jQuery('<option>', {
 					'value': obj.select_options[i].val,
 					html: obj.select_options[i].text
 				});
-				if (obj.select_default == obj.select_options[i].val) opt.attr('selected', 'selected');
-				
+				if (obj.select_default == obj.select_options[i].val) opt.attr('selected', 'selected');				
 				sel_el.append(opt);
 			}
 			
 			sel_el.appendTo(form_elem);
-			
-			//return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><select name="' + name + '" id="' + id + '"  class="" >' + opt + '</select></div>';
+
 			break;
 
 		case 'my_elem_checkbox':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">&nbsp;</div><input type="checkbox" name="' + name + '" id="my_' + elem_count + '"  class="" /><span class="form_elem_required">' + required + '</span><label for="my_' + elem_count + '">' + obj.elem_title + '</label></div>';
+			
+			form_elem_title.appendTo(form_elem);
+			jQuery('<input>', {
+				'type': 'checkbox',
+				'name': name,
+				'id': "my_" + elem_count
+			}).appendTo(form_elem);
+
 			break;
 
 		case 'my_elem_radio':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">&nbsp;</div><input type="radio" name="' + name + '" id="my_' + elem_count + '"  class="" /><span class="form_elem_required">' + required + '</span><label for="my_' + elem_count + '">' + obj.elem_title + '</label></div>';
+			
+			form_elem_title.appendTo(form_elem);
+			jQuery('<input>', {
+				'type': 'radio',
+				'name': name,
+				'id': "my_" + elem_count
+			}).appendTo(form_elem);
+			
 			break;
 
 		case 'my_elem_button':
-			return '<div elem_type="' + obj.type + '" class="form_elem" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">&nbsp;<span class="form_elem_required">' + required + '</span></div><button id="' + id + '"  class="">' + obj.elem_title + '</button></div>';
+			form_elem_title.html("&nbsp;");
+			form_elem_title.appendTo(form_elem);
+			jQuery('<button>', {
+				'id': id,
+				html: obj.elem_title
+			}).appendTo(form_elem);
+			
 			break;
 
 		default:
@@ -483,8 +499,8 @@ function load_form(){
 		},
 		dataType: "text",
 		success: function(data){
-
-			var arr = JSON.parse(data);
+			
+			var arr = JSON.parse(data?data:"{}");
 			
 
 			for (i = 0; i < arr.length; i++) {		
