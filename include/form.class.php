@@ -15,7 +15,7 @@ class form {
 	function save_form ($name, $json, $sub_projectid) {
 		if (!isset($_SESSION)) session_start();
 		db::db_connect();
-		$this -> sql = "INSERT INTO forms SET name = '$name', json = '$json', userid = '{$_SESSION['id']}', sub_projectid = '$sub_projectid'";
+		$this -> sql = "INSERT INTO forms SET name = '$name', json = '$json', userid = '{$_SESSION['id']}', sub_projectid = '$sub_projectid' on duplicate key update json = '$json'";
 		if (db::mq($this -> sql) === true) {
 			return true;
 		}
@@ -25,7 +25,7 @@ class form {
 	}
 
 	// Взять из БД форму и отдать ее клиенту
-	function load_form ($name) {
+	function load_form ($name, $sub_projectid) {
 		//if (!isset($_SESSION)) session_start();
 		db::db_connect();
 		$this -> sql = "SELECT json FROM forms WHERE name = '$name' and sub_projectid='$sub_projectid'";
