@@ -23,7 +23,7 @@
 
 	<div id="header" class="ui-widget-header ui-corner-all">
 		<img src="images/logo.png"></img>
-		Вы вошли как <{$user.login}>, <a href="?page=logout" >Выйти</a></span>
+		Вы вошли как {$user.login}, <a href="?page=logout" >Выйти</a></span>
 	</div><!-- #header-->
 
 	<div id="middle">
