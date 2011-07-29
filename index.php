@@ -94,11 +94,6 @@
 		
 		case 'form_browse':
 			if(isset($_SESSION['id'])) {
-				if(!count($user)) {
-					$smarty -> assign('error', 'Такого пользователя не существует!');
-					$smarty -> display('tpl/error.tpl');
-					exit();
-				}
 				$projects = $form -> get_projects();
 				$smarty -> assign ('projects', $projects);
 				$smarty -> display('tpl/form_browse.tpl');
