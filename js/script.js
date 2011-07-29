@@ -26,6 +26,31 @@ var current_step_tab = "#step_1";
 var count_step_tab = 1;
 
 
+
+
+  function getParam(str){
+var tmp = new Array();      // два вспомагательных    
+var tmp2 = new Array();     // массива    
+var param = new Array();    
+        
+var get = location.search;  // строка GET запроса    
+if(get != '')    
+{    
+    tmp = (get.substr(1)).split('&');   // разделяем переменные    
+    for(var i=0; i < tmp.length; i++)    
+    {    
+        tmp2 = tmp[i].split('=');       // массив param будет содержать    
+        param[tmp2[0]] = tmp2[1];       // пары ключ(имя переменной)->значение    
+    }    
+    var obj = document.getElementById('greq');  // вывод на экран    
+  
+    
+}
+		return param[str]
+   }
+
+
+
 //Добавление шага формы
 function add_step_tab(){
 	//var selected = $( "#step_tabs" ).tabs( "option", "selected" );
@@ -481,7 +506,7 @@ function save_form(){
 	var js = JSON.stringify(obj_mass);
 
 	$("#progressbar").show();
-	$.post("index.php", {request: "save", json: js, 'name': 'test', 'sub_projectid': '1'}, function(data) {		
+	$.post("index.php", {request: "save", json: js, 'form_id': getParam("form_id")}, function(data) {		
 		$("#progressbar").hide();
 	});
 };
@@ -489,13 +514,17 @@ function save_form(){
 //Загрузка JSON с сервера и построение формы
 function load_form(){
 	var cook = "{}";
+	
+	
+	
 
+	
+	
 	$.ajax({
 		url: "index.php",
 		type : "POST",
 		data : {request: "load",
-				'name': 'test',
-				'sub_projectid': '1'
+				'form_id': getParam("form_id")
 		},
 		dataType: "text",
 		success: function(data){

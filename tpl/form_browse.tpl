@@ -4,6 +4,7 @@
 		<script type="text/javascript">
 		$(document).ready(function(){
 			$("#projects").change(function(){
+				if (!$(this).val()) return false;
 				$.ajax({
 					url: "index.php",
 					type : "POST",
@@ -20,6 +21,7 @@
 			});
 			
 			$("#sub_projects").change(function(){
+				if (!$(this).val()) return false;
 				$.ajax({
 					url: "index.php",
 					type : "POST",
@@ -41,6 +43,15 @@
 					alert("Выберите форму для открытия!");
 				}
 			});
+			
+			$("#new_form").click(function(){
+				if ($("#forms").val() && $("#new_form_name").val()) {
+					window.location.href = "?page=form_edit&form_id=" + $("#forms").val();
+				} else {
+					alert("Выберите форму для открытия!");
+				}
+			});
+			
 		});
 		{/literal}
 		</script>
@@ -62,7 +73,8 @@
 
 		</select>
 		<br/>
-		<button id="open_form">Открыть</button>
-		
+		<button id="open_form">Открыть</button><br/>
+		<input type="text" id="new_form_name" />
+		<button id="new_form">New</button>
 	{/block}
 {/extends}
