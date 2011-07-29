@@ -5,7 +5,6 @@
 	if ((!isset($_SESSION['id'])) && (!isset($_REQUEST['page']))) {
 		header ("Location: ?page=login");	
 	}
-	
 	require_once ('libs/smarty/Smarty.class.php');
 	require_once ('include/user.class.php');
 	require_once ('include/form.class.php');
@@ -55,8 +54,13 @@
 	$smarty = new Smarty;
 	$smarty -> template_dir = 'tpl/';
 	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
-	$data     = new user();				
-	
+	$data     = new user();
+
+		// DELETE
+	$form = new form();
+	$form -> get_html_gosuslugi( "test", 1);
+		// DELETE
+		
 	switch ($page) {
 		
 		case 'form_edit':
@@ -69,6 +73,22 @@
 				}
 				$smarty -> assign ('user',$user);
 				$smarty -> display('tpl/form_edit.tpl');
+			}
+			else {
+				header("Location: ?page=login");
+			}
+		break;
+		
+		case 'form_browse':
+			if(isset($_SESSION['id'])) {
+				$user = $data -> get_array_user($_SESSION['id']);
+				if(!count($user)) {
+					$smarty -> assign('error', 'Такого пользователя не существует!');
+					$smarty -> display('tpl/error.tpl');
+					exit();
+				}
+				$smarty -> assign ('user',$user);
+				$smarty -> display('tpl/form_browse.tpl');
 			}
 			else {
 				header("Location: ?page=login");
@@ -102,10 +122,10 @@
 		
 		default:
 			if (isset($_SESSION['id'])) {
-				header("Location: ?page=form_edit");
+				header("Location: ?page=form_browse");
 				exit();
 			}
 				$smarty -> assign('error', 'Такой страницы не существует!');
-				$smarty -> display('tpl/error.tpl');
+				$smarty -> display('tpl/'.$page.'.tpl');
 		break;		
 	}
