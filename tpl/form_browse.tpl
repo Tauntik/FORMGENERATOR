@@ -46,7 +46,7 @@
 			
 			$("#new_form").click(function(){
 				if ($("#forms").val() && $("#new_form_name").val()) {
-					window.location.href = "?page=form_edit&form_id=" + $("#forms").val();
+					window.location.href = "?page=form_create&new_form_name=" + $("#new_form_name").val() + "&id_sub_project=" + $("#sub_projects").val();
 				} else {
 					alert("Выберите форму для открытия!");
 				}
