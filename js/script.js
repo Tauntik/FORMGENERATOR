@@ -744,15 +744,10 @@ $(document).ready(function(){
 			b.select_options[i].val = $(this).val();
 			b.select_options[i].text= $(this).text();
 			i++;
-		});
-		
+		});		
 		
 		var for_click = $(".form_elem[sel=sel]");
 		b.type = $(".form_elem[sel=sel]").attr('elem_type');
-		
-		
-
-		
 		
 		var html_ = get_elem_html(b);
 		
