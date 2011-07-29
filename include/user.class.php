@@ -1,6 +1,6 @@
 <?php
 
-include("db.class.php");
+require_once("db.class.php");
 
 class user {	
 	
