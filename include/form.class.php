@@ -114,22 +114,22 @@ class form {
 	
 	// Получить все доступные формы ведомства
 	public function get_sub_projects ($projectid) {
-		$projects = array();
+		$sub_projects = "<option value='0'>Не выбрано</option>";
 		db::db_connect();
 		$this -> sql = "SELECT * FROM sub_projects WHERE projectid = $projectid";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
-			$sub_projects[] = $r;
+			$sub_projects .= "<option value='{$r['id']}'>{$r['name']}</option>";
 		}
 		return $sub_projects;
 	}
 	
 	// Получить все доступные формы пользователю в зависимости от того, к каким проектам он привязан
 	public function get_forms ($sub_projectid) {
-		$forms = array();
+		$forms = "<option value='0'>Не выбрано</option>";
 		db::db_connect();
 		// Проверка доступности для данного проекта
-		$this -> sql = "SELECT projectid FROM user_projects WHERE id = {$_SESSION['id']}";
+		$this -> sql = "SELECT projectid FROM users_projects WHERE id = {$_SESSION['id']}";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
 			$allow_projects[] = $r['projectid'];
@@ -139,7 +139,7 @@ class form {
 		$this -> sql = "SELECT id, name FROM forms WHERE sub_projectid = $sub_projectid";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
-			$forms[] = "<option value='{$r['id']}'>{$r['name']}</option>";
+			$forms .= "<option value='{$r['id']}'>{$r['name']}</option>";
 		}
 		return $forms;
 	}

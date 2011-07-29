@@ -12,8 +12,8 @@
 	$smarty = new Smarty;
 	$smarty -> template_dir = 'tpl/';
 	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
-	$form = new form();
-	$data     = new user();
+	$form   = new form();
+	$data   = new user();
 
 	// Обрабатываем различные ответы от клиента, переданные в POST массиве
 	$request = isset ($_POST['request']) ? $_POST['request'] : '';
@@ -52,14 +52,14 @@
 			
 			case 'get_sub_projects':
 				$id_project = isset($_POST['id_project']) ? $_POST['id_project'] : '';
-				$sub_projects = get_sub_projects($id_project);
+				$sub_projects = $form -> get_sub_projects($id_project);
 				echo ($sub_projects);
 				exit();
 			break;
 			
 			case 'get_forms':
 				$id_sub_project = isset($_POST['id_sub_project']) ? $_POST['id_sub_project'] : '';
-				$forms = get_forms($id_sub_project);
+				$forms = $form -> get_forms($id_sub_project);
 				echo ($forms);
 				exit();
 			break;
@@ -114,7 +114,7 @@
 				// Логинимся
 				$insite = $data->login($login, $password, $capcha);
 				if ($insite&&isset($_SESSION['id'])) {
-					header("Location: ?page=form_edit");
+					header("Location: ?page=form_browse");
 				}
 				else {
 					$smarty -> assign('error_message', 'Вы ввели неверно авторизационные данные');
