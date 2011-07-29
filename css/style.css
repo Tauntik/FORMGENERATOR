@@ -37,15 +37,16 @@ input {
 
 /* Header
 -----------------------------------------------------------------------------*/
-#header {
-	height: 75px;
-	margin: 2px 5px;
+#header{
 	line-height: 75px;
-	padding-left: 35px;
+	margin: 2px 5px;
+	height: 75px;
+	padding: 0 35px;
 	
 }
 #header img{
 	margin-top: 7px;
+	position: absolute;
 }
 
 /* Middle

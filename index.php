@@ -16,9 +16,9 @@
 	switch ($page) {
 		
 		case 'form_edit':
-			if(isset($_SESSION['id'])) {
+			
 				$smarty -> display('tpl/form_edit.tpl');
-			}
+			
 		break;
 		
 		case 'login':

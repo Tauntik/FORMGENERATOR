@@ -201,7 +201,19 @@
 						<div class="my_form_elem_title"><label for="elem_50">50%: </label></div>
 						<input type="checkbox" id="elem_50" />
 					</div>
-
+					
+					<div class="my_form_elem">
+						<div class="my_form_elem_title">Columns: </div>
+						<select id="elem_columns">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+						</select>
+					</div>
 
 					<br/>
 

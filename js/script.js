@@ -94,14 +94,14 @@ function get_elem_html(obj) {
 	if (!obj.elem_title) obj.elem_title = "Title";
 	if (!obj.elem_id) obj.elem_id = "elem_" + elem_count;
 	if (!obj.elem_name) obj.elem_name = "field[elem_" + elem_count + "]";
-	if (!obj.elem_required) obj.elem_required = "";
+	//if (!obj.elem_required) obj.elem_required = "";
 	if (!obj.select_options) obj.select_options = new Array();
 
 	
 	
 	var id = obj.elem_id;
 	var name = obj.elem_name;
-	var required = obj.elem_required;
+	var required = obj.elem_required ? "*" : "";
 
 	
 	
@@ -156,9 +156,13 @@ function get_elem_html(obj) {
 			break;
 
 		case 'my_elem_text':
+			var el_col = obj.elem_columns;
+			if (!el_col) el_col = 1;
+			var percent = (100 / el_col) - 2;
+			//alert(percent);
 			var elem_50 = '';
-			if (obj.elem_50) elem_50 = ' elem_50';
-			return '<div elem_type="' + obj.type + '" class="form_elem' + elem_50 + '" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><input type="text" name="' + name + '" id="' + id + '"  class="" /></div>';
+			//if (obj.elem_50) elem_50 = ' elem_50';
+			return '<div style="display: inline-table; width: ' + percent + '%;" elem_type="' + obj.type + '" class="form_elem' + elem_50 + '" number="' + elem_count + '" json=' + json + '><div class="form_elem_title">' + obj.elem_title + '<span class="form_elem_required">' + required + '</span></div><input type="text" name="' + name + '" id="' + id + '"  class="" /></div>';
 			break;
 
 		case 'my_elem_textarea':
@@ -223,7 +227,7 @@ function show_hide_elem_panel() {
 	$("#elem_select_default").html("");	
 	$(".my_form_elem input").val("");
 	$(".my_form_elem input[type=checkbox]").removeAttr('checked');
-	
+	$("#elem_columns option[value=1]").attr('selected', 'selected');
 	
 	
 	//Устанавливаем значения элементов для редактирования, значения берутся из объекта JSON.parse(json)
@@ -289,7 +293,7 @@ function show_hide_elem_panel() {
 	
 	$("#elem_align option[value=" + b.elem_align + "]").attr('selected', 'selected');
 	$("#elem_h option[value=" + b.elem_h + "]").attr('selected', 'selected');
-
+	$("#elem_columns option[value=" + b.elem_columns + "]").attr('selected', 'selected');
 	//Устанавливаем видимость элементов для редактирования
 	var properties = new Object();
 
@@ -297,7 +301,7 @@ function show_hide_elem_panel() {
 	properties.elem_title = true;
 	properties.elem_id = true;
 	properties.elem_name = true;
-	
+	properties.elem_columns = true;
 	switch (b.type) {			
 		case 'my_elem_title':
 			properties.elem_name = false;			
@@ -645,13 +649,13 @@ $(document).ready(function(){
 		b.elem_file_accept = $("#elem_file_accept").val();
 		b.elem_file_size = $("#elem_file_size").val();
 		b.elem_email = $("#elem_email").val();
-	
+		b.elem_columns = $("#elem_columns").val();
 		
 		if ($("#elem_digits").attr('checked') == "checked") b.elem_digits = true;
 		if ($("#elem_number").attr('checked') == "checked") b.elem_number = true;
 		if ($("#elem_email").attr('checked') == "checked") b.elem_email = true;
 		if ($("#elem_url").attr('checked') == "checked") b.elem_url = true;
-		if ($("#elem_required").attr('checked') == "checked") b.elem_required = "*";
+		if ($("#elem_required").attr('checked') == "checked") b.elem_required = true;
 		if ($("#elem_onchange").attr('checked') == "checked") b.elem_onchange = true;
 		if ($("#elem_onclick").attr('checked') == "checked") b.elem_onclick = true;
 		if ($("#elem_bold").attr('checked') == "checked") b.elem_bold = true;
@@ -673,6 +677,10 @@ $(document).ready(function(){
 		
 		var for_click = $(".form_elem[sel=sel]");
 		b.type = $(".form_elem[sel=sel]").attr('elem_type');
+		
+		
+
+		
 		
 		var html_ = get_elem_html(b);
 		
