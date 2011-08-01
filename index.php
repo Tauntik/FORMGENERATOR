@@ -143,7 +143,7 @@
 		break;
 		
 		default:
-			if (isset($_SESSION['id'])) {
+			if (!isset($_SESSION['id'])) {
 				header("Location: ?page=form_browse");
 				exit();
 			}
