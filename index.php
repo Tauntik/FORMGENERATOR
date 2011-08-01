@@ -62,6 +62,38 @@
 				exit();
 			break;
 			
+			case 'get_user_in_project':
+				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
+				$projectid = isset($_POST['id_project']) ? $_POST['id_project'] : '';
+				$user_in_project = $data -> user_in_project($userid, $projectid, false);		// true если доступен проект и false если недоступен
+				echo ($user_in_project);
+				exit();
+			break;
+			
+			case 'set_user_in_project':
+				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
+				$projectid = isset($_POST['id_project']) ? $_POST['id_project'] : '';
+				$user_in_project = $data -> user_in_project($userid, $projectid, true);		// если успешная операция true, иначе - false
+				echo ($user_in_project);
+				exit();
+			break;
+			
+			case 'delete_user':
+				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
+				$result_delete = $data -> user_delete($userid);		// если удалили "deleted", "еrror" если не удалили
+				echo($result_delete);
+				exit();
+			break;
+			
+			case 'add_user':
+				$login = isset($_POST['user_login']) ? $_POST['user_login'] : '';
+				$email = isset($_POST['user_email']) ? $_POST['user_email'] : '';
+				$name = isset($_POST['user_name']) ? $_POST['user_name'] : '';
+				$result_add = $data -> user_add($login, $email, $name);		// если удалили "deleted", "еrror" если не удалили
+				$result_add = base64_encode($result_add);
+				header("Location: ?page=admin&error=$result_add");
+			break;
+
 			default: 
 			
 			break;
@@ -107,9 +139,12 @@
 		break;
 		
 		case 'form_browse':
+			echo($form -> get_forms (1));
 			if(isset($_SESSION['id'])) {
-				$projects = $form -> get_projects();
+				$projects = $form -> get_allow_projects();
 				$smarty -> assign ('projects', $projects);
+				$user = $data -> get_array_user($_SESSION['id']);
+				$smarty -> assign ('user', $user);
 				$smarty -> display('tpl/form_browse.tpl');
 			}
 			else {
@@ -121,7 +156,7 @@
 			$login    = isset($_POST['login'])?$_POST['login']:'';
 			$password = isset($_POST['password'])?$_POST['password']:'';
 			$capcha   = isset($_POST['capcha'])?$_POST['capcha']:'';
-			if (!$login||!$password||!$capcha) {
+			if (!$login&&!$password&&!$capcha) {
 				$smarty -> display ('tpl/login.tpl');
 			}
 			else {
@@ -142,12 +177,24 @@
 			header("Location: ?page=login");
 		break;
 		
+		case 'admin':
+			$users    = $form -> get_users();
+			$projects = $form -> get_projects();
+			$smarty -> assign($users);
+			$smarty -> assign($projects);	
+			$error = isset($_REQUEST['error']) ? $_REQUEST['error'] : '';
+			$smarty -> assign("add_user_message", $error);	
+			$smarty -> display ('tpl/admin.tpl');
+		break;
+		
 		default:
 			if (!isset($_SESSION['id'])) {
 				header("Location: ?page=form_browse");
 				exit();
 			}
+			if($page) {
 				$smarty -> assign('error', 'Такой страницы не существует!');
 				$smarty -> display('tpl/'.$page.'.tpl');
+			}
 		break;		
 	}
