@@ -1,6 +1,6 @@
 {extends file="main.tpl"}
 	{block name="content"}
-	
+	<script type="text/javascript" src="js/form_edit.js"></script>
 	<div id="container">
 			<div id="content">
 				<div id="step_tabs">

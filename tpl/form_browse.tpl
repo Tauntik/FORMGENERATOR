@@ -55,7 +55,7 @@
 		});
 		{/literal}
 		</script>
-		Выберете проект: 
+		Выберите проект: 
 		<select id="projects">
 			<option value="">не выбрано</option>
 			{foreach from=$projects item=item}
@@ -63,12 +63,12 @@
 			{/foreach}
 		</select>
 		<br/>
-		Выберете sub_проект: 
+		Выберите sub_проект: 
 		<select id="sub_projects">
 
 		</select>
 		<br/>
-		Выберете sub_проект: 
+		Выберите форму: 
 		<select id="forms">
 
 		</select>

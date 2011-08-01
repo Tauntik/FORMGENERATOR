@@ -24,6 +24,12 @@ img {
 }
 input {
 	vertical-align: middle;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+select {
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 #wrapper {
 	width: 100%;
