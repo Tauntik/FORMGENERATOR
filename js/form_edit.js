@@ -916,7 +916,6 @@ $(document).ready(function(){
 	$("#delete_elem").click(function(){		
 		$(".form_elem[sel=sel]").remove();
 		show_hide_elem_panel();
-		history_add();
 	});
 	
 	//Добавление <OPTION> к <SELECT>
