@@ -10,6 +10,7 @@
 //_TODO при удалении остается панель редактирования инструмента
 //_TODO при добавлении элемента сделать чтобы он выделялся, чтобы последующие элементы вставлялись после него
 
+//TODO сделать ctrl-z && ctrl-y
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
 //TODO фунцкия создать дубликат элемента
@@ -22,13 +23,54 @@
 //TODO загрузка в SELECT файла с OPTION
 //TODO сделать готовые решения для масок
 
+
 var elem_count = 0;
 var current_step_tab = "#step_1";
 var count_step_tab = 1;
 var elem_accept_hover = true;
  
 
+var history = new Array();
+var history_inc = -1;
+function history_add() {
+	
+	var n = 0;
+	$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
+		n++;		
+		$($(this).attr('href') + " .form_elem").attr('step', n);
+	});
+	
+	var obj_mass = new Array();
+	$(".form_elem").each(function(){
+		var js = $(this).attr('json');		
+		var obj = JSON.parse(js);
+		obj.step = $(this).attr('step');
+		
+		
+		obj_mass.push(obj);
+	});
+	var js = JSON.stringify(obj_mass);
+	var js_ = JSON.stringify(history[history.length - 1]);
 
+	if (js == js_) {
+		//alert(1);
+	} else {
+		history_inc++;
+		history[history_inc] = obj_mass;
+		
+		
+		history.splice(history_inc + 1, history.length - history_inc);
+		
+
+		
+	}
+	//var js = JSON.stringify(obj_mass);
+	$("#form_forward").button( "disable" );
+	$("#form_back").button( "enable" );
+	//alert(history.length);
+	//console.log(history_inc);
+}
+ 
 function getParam(str){
 	var tmp = new Array();      // два вспомагательных    
 	var tmp2 = new Array();     // массива    
@@ -515,9 +557,7 @@ function save_form(){
 		$($(this).attr('href') + " .form_elem").attr('step', n);
 	});
 	
-	//for (var i = 0; i < count_step_tab; i++) {
-	//	$("#step_" + (i + 1) + " .form_elem").attr('step', (i + 1));
-	//}
+
 	var obj_mass = new Array();
 	$(".form_elem").each(function(){
 		var js = $(this).attr('json');		
@@ -615,6 +655,7 @@ function load_form(){
 					elem_accept_hover = true;
 				}				
 			});
+			history_add();
 		}
 	});
 	
@@ -769,6 +810,7 @@ $(document).ready(function(){
 		});
 		
 		//$("#save_elem").click();		
+		history_add();
 	});
 	
 	//фокус на элемент формы
@@ -863,12 +905,18 @@ $(document).ready(function(){
 			buttonImage: "images/calendar.gif",
 			buttonImageOnly: true
 		});
+		
+		
+		history_add();
+		
+		
 	});
 	
 	//Удаление выбранного элемента формы
 	$("#delete_elem").click(function(){		
 		$(".form_elem[sel=sel]").remove();
 		show_hide_elem_panel();
+		history_add();
 	});
 	
 	//Добавление <OPTION> к <SELECT>
@@ -951,5 +999,54 @@ $(document).ready(function(){
 	});
 	
 	
+	$("#form_back").click(function(){
+		
+		if (history_inc == 0) {
+			$("#form_back").button( "disable" );
+			return true;
+		}
+		$("#step_1, #step_2, #step_3, #step_4").html("");
+		
+		for (i = 0; i < history[history_inc - 1].length; i++) {		
+			var abs = history[history_inc - 1][i];
+			var st = abs.step;
+			//alert(abs.step);
+			while (st > count_step_tab) {
+				add_step_tab();
+			}
+			
+			$("#step_" + st).append(get_elem_html(abs));
+		}
+		
+		history_inc--;
+		if (history_inc == 0) $("#form_back").button( "disable" );
+		$("#form_forward").button( "enable" );
+	});
+	
+	$("#form_forward").click(function(){
+		
+		if (history_inc ==  history.length - 1) {
+			$("#form_forward").button( "disable" );
+			return true;
+		}
+		
+		$("#step_1, #step_2, #step_3, #step_4").html("");
+		
+		for (i = 0; i < history[history_inc + 1].length; i++) {
+			var abs = history[history_inc + 1][i];
+			var st = abs.step;
+			//alert(abs.step);
+			while (st > count_step_tab) {
+				add_step_tab();
+			}
+			
+			$("#step_" + st).append(get_elem_html(abs));
+		}
+		
+		history_inc++;
+		if (history_inc ==  history.length - 1) $("#form_forward").button( "disable" );
+			
+		$("#form_back").button( "enable" );
+	});
 	
 });
