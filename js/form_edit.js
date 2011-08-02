@@ -4,29 +4,28 @@
 //_TODO бегующий курсор
 //_TODO добавление множества колонок
 //_TODO если элемент не выделен на 2ой вкладке остаются кнопки "сохранить" и "удалить"
-
+//_TODO названия шагов при удалении поправить
+//_TODO переписать function get_elem_html(obj) для возврата не текста а объекта jQuery
+//_TODO удаление по DELETE
+//_TODO при удалении остается панель редактирования инструмента
+//_TODO при добавлении элемента сделать чтобы он выделялся, чтобы последующие элементы вставлялись после него
 
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
 //TODO фунцкия создать дубликат элемента
 //TODO добавить HELP к элементам
-//TODO названия шагов при удалении поправить
-//TODO при удалении остается панель редактирования инструмента
 //TODO сделать при выборе класса http://jqueryui.com/demos/autocomplete/#multiple
 //TODO поправить <label> на чекбоксах панели инструментов
-//TODO удаление по DELETE
-//TODO при добавлении элемента сделать чтобы он выделялся, чтобы последующие элементы вставлялись после него
+
 //TODO проверка на повторяющиеся id
 //TODO сделать пример заполнения для <SELECT> <CHECKBOX>
-//TODO переписать function get_elem_html(obj) для возврата не текста а объекта jQuery
-
 //TODO загрузка в SELECT файла с OPTION
 //TODO сделать готовые решения для масок
 
 var elem_count = 0;
 var current_step_tab = "#step_1";
 var count_step_tab = 1;
-
+var elem_accept_hover = true;
  
 
 
@@ -581,9 +580,9 @@ function load_form(){
 			});
 			
 			$( ".elem_button" ).draggable({
-				connectToSortable: "#content",
+				connectToSortable: "#content",				
+				delay: 300,
 				helper: "clone",
-				revert: "invalid",
 				addClasses: false,
 				start: function (event, ui) {
 					var b = new Object();
@@ -595,11 +594,11 @@ function load_form(){
 						if ($(this).css('position') == 'absolute') {
 							
 							$(this).attr('class', '');
-							$(this).html(html_);
-							$(this).css('width', '400px');
+							$(this).html($(html_).attr('sel', 'sel').addClass('ui-widget-header ui-corner-all'));
+							$(this).css('width', '600px');
 						}
 					});
-					
+					elem_accept_hover = false;
 					//$(html_).replaceAll($(this).hide());
 				},
 				
@@ -607,9 +606,13 @@ function load_form(){
 					var b = new Object();
 					b.type = $(this).attr('id');				
 					var html_ = get_elem_html(b);
-
+					$(".form_elem").removeClass('ui-widget-header ui-corner-all');
+					$(".form_elem").removeAttr('sel');
 					
-					$(html_).replaceAll($("#content a.elem_button"));
+					$($(html_).attr('sel', 'sel').addClass('ui-widget-header ui-corner-all')).replaceAll($("#content a.elem_button"));
+					
+					$(".form_elem").not("#step_tabs .form_elem").remove();
+					elem_accept_hover = true;
 				}				
 			});
 		}
@@ -631,6 +634,17 @@ function load_form(){
 $(document).ready(function(){
 	
 	load_form();
+	
+	
+	jQuery(document).bind('keydown', function (evt){
+		//$(".form_elem").live('change keyup keydown', function(evt){	
+		//console.log(evt);
+		if ((evt.keyCode == 46) && evt.shiftKey) {
+			$("#delete_elem").click();
+			return false;
+		}
+		
+	});
 	
 	jQuery('#sideLeft').containedStickyScroll({
         closeChar: '' 
@@ -684,7 +698,7 @@ $(document).ready(function(){
 									});
 									var aff = $("a[href^=#step_add], a[href^=#step_delete]").parent().parent();
 									aff.append($("a[href^=#step_add], a[href^=#step_delete]").parent());
-									//$(this).sortable('refresh');
+									
 								}
 							});
 	$(".ui-tabs-nav a").css('cursor', 'pointer');
@@ -726,15 +740,22 @@ $(document).ready(function(){
 		obj.type = $(this).attr("id");
 		var html = get_elem_html(obj);
 		
+		var ddd = $(html);
 		//Добавление элемента после выделенного или в конец шага
 		if ($(".form_elem[sel=sel]").length > 0) {
-			$(".form_elem[sel=sel]").after(html);
+			$(".form_elem[sel=sel]").after(ddd);
 		} else {
-			$(current_step_tab).append(html);
+			
+			$(current_step_tab).append(ddd);
 		}
+		
 		
 		$(".form_elem").removeClass('ui-widget-header ui-corner-all');
 		$(".form_elem[sel=sel]").removeAttr('sel');
+		
+		ddd.addClass('ui-widget-header ui-corner-all').attr('sel', 'sel');
+		
+		
 		
 		$("#content").sortable({
 			items: '.form_elem',
@@ -747,19 +768,23 @@ $(document).ready(function(){
 			buttonImageOnly: true
 		});
 		
-		$("#save_elem").click();		
+		//$("#save_elem").click();		
 	});
 	
 	//фокус на элемент формы
 	$(".form_elem").live('mouseover', function(){
-		$(this).addClass("ui-widget-header ui-corner-all");
+		
+		if (elem_accept_hover) $(this).addClass("ui-widget-header ui-corner-all");
+		
 	});
 	
 	//потеря фокуса с элемента формы	
 	$(".form_elem").live('mouseout', function(){
-		if ($(this).attr('sel') != 'sel') {
-			$(this).removeClass("ui-widget-header ui-corner-all");
-		}		
+		if (elem_accept_hover) {
+			if ($(this).attr('sel') != 'sel') {
+				$(this).removeClass("ui-widget-header ui-corner-all");
+			}		
+		}
 	});
 	
 	//нажатие на элемент формы в "#content"
@@ -842,7 +867,8 @@ $(document).ready(function(){
 	
 	//Удаление выбранного элемента формы
 	$("#delete_elem").click(function(){		
-		$(".form_elem[sel=sel]").remove();		
+		$(".form_elem[sel=sel]").remove();
+		show_hide_elem_panel();
 	});
 	
 	//Добавление <OPTION> к <SELECT>
@@ -855,6 +881,7 @@ $(document).ready(function(){
 	$("#elem_del_options").click(function(){
 		$("#elem_del_options_select :selected").remove();
 		$("#save_elem").click();
+		show_hide
 	});
 	
 	//Нажатие "Сохранить форму"
