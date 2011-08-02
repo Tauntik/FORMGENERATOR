@@ -182,7 +182,7 @@
 			$smarty -> assign('users', $users);
 			$smarty -> assign('projects', $projects);	
 			$error = isset($_REQUEST['error']) ? $_REQUEST['error'] : '';
-			$smarty -> assign("add_user_message", $error);	
+			$smarty -> assign("add_user_message", base64_decode($error));	
 			$smarty -> display ('tpl/admin.tpl');
 		break;
 		
