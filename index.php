@@ -139,13 +139,10 @@
 		break;
 		
 		case 'form_browse':
-			echo($form -> get_forms (1));
 			if(isset($_SESSION['id'])) {
 				$projects = $form -> get_allow_projects();
 				$smarty -> assign ('projects', $projects);
 				$user = $data -> get_array_user($_SESSION['id']);
-				$smarty -> assign ('user', $user);
-				$smarty -> display('tpl/form_browse.tpl');
 			}
 			else {
 				header("Location: ?page=login");
@@ -163,6 +160,8 @@
 				// Логинимся
 				$insite = $data->login($login, $password, $capcha);
 				if ($insite&&isset($_SESSION['id'])) {
+					$smarty -> assign ('user', $user);
+					$smarty -> display('tpl/form_browse.tpl');
 					header("Location: ?page=form_browse");
 				}
 				else {
@@ -178,10 +177,10 @@
 		break;
 		
 		case 'admin':
-			$users    = $form -> get_users();
+			$users    = $data -> get_users();
 			$projects = $form -> get_projects();
-			$smarty -> assign($users);
-			$smarty -> assign($projects);	
+			$smarty -> assign('users', $users);
+			$smarty -> assign('projects', $projects);	
 			$error = isset($_REQUEST['error']) ? $_REQUEST['error'] : '';
 			$smarty -> assign("add_user_message", $error);	
 			$smarty -> display ('tpl/admin.tpl');

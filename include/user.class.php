@@ -110,9 +110,7 @@ class user {
 		$this -> sql = "SELECT * FROM users WHERE active = 1";
 		$result = db::mq($this->sql);
 		while ($r = mysql_fetch_assoc($result)) {
-			if (in_array($r['sub_projectid'], $allow_sub_projects )) {
-				$options .= "<option value='{$r['id']}'>{$r['login']}</option>";
-			}
+			$options .= "<option value='{$r['id']}'>{$r['login']}</option>";
 		}
 		return ($options) ;
 	}

@@ -190,10 +190,9 @@ class form {
 		$options = "<option value='0'>Не выбрано</option>";
 		db::db_connect();		
 		$this -> sql = "SELECT * FROM projects";
+		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
-			if (in_array($r['sub_projectid'], $allow_sub_projects )) {
-				$options .= "<option value='{$r['id']}'>{$r['name']}</option>";
-			}
+			$options .= "<option value='{$r['id']}'>{$r['name']}</option>";
 		}
 		return ($options) ;
 	}
