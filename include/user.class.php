@@ -83,7 +83,7 @@ class user {
 				$this->sql = "DELETE FROM users_projects WHERE userid = '$userid' and projectid = '$projectid'";
 				$result = db::mq($this->sql);
 				if (mysql_affected_rows()) {
-				return 'true';
+					return 'true';
 				}
 			}
 		}

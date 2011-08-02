@@ -117,7 +117,7 @@ class form {
 		
 		db::db_connect();
 
-		$this -> sql = "SELECT * FROM users_projects where id = {$_SESSION['id']}";
+		$this -> sql = "SELECT * FROM users_projects where userid = {$_SESSION['id']}";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
 			$allow_projects[] = $r['projectid'];
