@@ -36,6 +36,7 @@ class user {
 			$result = db::mq($this->sql);
 			if ($r = mysql_fetch_assoc($result)) {
 				$_SESSION['id'] = $r['id'];
+				$_SESSION['user_type'] = $r['user_type'];
 				$_SESSION['email'] = $r['email'];
 				return true;	// Все успешно, возвращаем правду
 			}
@@ -125,22 +126,13 @@ class user {
 		
 	}
 	
-	// Удаляем пользователя (точнее перемещаем его в таблицу 
+	// Удаляем пользователя 
 	public function user_add ($login, $email, $name) {
-		if(!preg_match('/^[a-z0-9_\-]+$/i',$array_values['login'])){
+		if(!preg_match('/^[a-z0-9_\-]+$/i',$login)){
 			$error_message = "В логине могут использоваться только латинские буквы и цифры. Логин не может быть пустым.<br>\n";
 			return $error_message;
 		}
 		db::db_connect();		
-		$this -> sql = "INSERT INTO users SET active = 0 WHERE id = $userid";
-		$result = db::mq($this->sql);
-		if (mysql_affected_rows()) {
-			return "deleted";
-		}
-		else {
-			return "error";
-		}
-		
 		$password = $this -> gen_password ();
 		$password_md5 = md5($password.md5($this -> salt));
 		
@@ -152,7 +144,7 @@ class user {
 			return $error_message;
 		}
 		else {
-			mail ($email, "Регестрация на formgenerator", "Вы успешно зарегестрированы на сайте formgenerator.<br> Ваш логин: $login<br> Ваш пароль: $password");
+			mail ($email, "Регестрация на formgenerator", "Вы успешно зарегестрированы на сайте formgenerator. Ваш логин: $login Ваш пароль: $password");
 			return "OK";
 		}
 	}

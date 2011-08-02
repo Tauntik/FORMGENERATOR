@@ -183,7 +183,13 @@
 			$smarty -> assign('projects', $projects);	
 			$error = isset($_REQUEST['error']) ? $_REQUEST['error'] : '';
 			$smarty -> assign("add_user_message", base64_decode($error));	
-			$smarty -> display ('tpl/admin.tpl');
+			if(isset($_SESSION) && ($_SESSION['user_type'] == 1)) {
+				$smarty -> display ('tpl/admin.tpl');
+			}
+			else {
+				$smarty -> assign('error', 'Недостаточно прав.');
+				$smarty -> display('tpl/error.tpl');
+			}
 		break;
 		
 		default:
