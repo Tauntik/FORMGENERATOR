@@ -65,8 +65,10 @@
 			case 'get_user_in_project':
 				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
 				$projectid = isset($_POST['id_project']) ? $_POST['id_project'] : '';
-				$user_in_project = $data -> user_in_project($userid, $projectid, false);		// true если доступен проект и false если недоступен
-				echo ($user_in_project);
+				if ($userid && $projectid) {
+					$user_in_project = $data -> user_in_project($userid, $projectid, false);		// true если доступен проект и false если недоступен
+					echo ($user_in_project);
+				}
 				exit();
 			break;
 			
@@ -143,6 +145,7 @@
 				$projects = $form -> get_allow_projects();
 				$smarty -> assign ('projects', $projects);
 				$user = $data -> get_array_user($_SESSION['id']);
+				$smarty -> display ('tpl/form_browse.tpl');
 			}
 			else {
 				header("Location: ?page=login");
@@ -196,6 +199,10 @@
 			if (!isset($_SESSION['id'])) {
 				header("Location: ?page=form_browse");
 				exit();
+			}
+			if(!$page) {
+				$smarty -> assign('error', 'Пустой page');
+				$smarty -> display('tpl/error.tpl');
 			}
 			if($page) {
 				$smarty -> assign('error', 'Такой страницы не существует!');

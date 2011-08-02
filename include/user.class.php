@@ -77,30 +77,30 @@ class user {
 		$result = db::mq($this->sql);
 		if (mysql_num_rows($result)) {
 			if(!$change) {
-				return true;
+				return 'true';
 			}
 			else {
 				$this->sql = "DELETE FROM users_projects WHERE userid = '$userid' and projectid = '$projectid'";
 				$result = db::mq($this->sql);
 				if (mysql_affected_rows()) {
-				return true;
+				return 'true';
 				}
 			}
 		}
 		else {
 			if(!$change) {
-				return false;
+				return 'false';
 			}
 			else {
 				$this->sql = "INSERT INTO users_projects SET userid = '$userid', projectid = '$projectid'";
 				$result = db::mq($this->sql);
 				if (mysql_insert_id()) {
-					return true;
+					return 'true';
 				}
 			}
 		}
 		if(!$change) {
-			return false;
+			return 'false';
 		}
 	}
 	
