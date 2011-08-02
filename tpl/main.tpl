@@ -23,7 +23,21 @@
 
 	<div id="header" class="ui-widget-header ui-corner-all">
 		<img src="images/logo.png"/>
-		<div align="right">Вы вошли как {$user.login}, <a href="?page=logout">Выйти</a></div>
+		<div align="right">
+			LINKS: 
+			<a href="?page=admin">ADMIN_PANEL</a>&nbsp;
+			<a href="?page=form_browse">FORM_BROWSE</a>&nbsp;
+			<a href="?page=form_edit&form_id=1">FORM_EDIT</a>&nbsp;
+			<a href="?page=login">LOGIN</a>&nbsp;
+		</div>
+		<br/>
+		{if $user.user_type}
+			<div align="right"><a href="?page=admin">ADMIN_PANEL</a></div>
+		{/if}
+		
+		{if $user.login}
+			<div align="right">Вы вошли как {$user.login}, <a href="?page=logout">Выйти</a></div>
+		{/if}
 	</div><!-- #header-->
 
 	<div id="middle">

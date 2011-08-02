@@ -44,7 +44,7 @@ select {
 /* Header
 -----------------------------------------------------------------------------*/
 #header{
-	line-height: 75px;
+	
 	margin: 2px 5px;
 	height: 75px;
 	padding: 0 35px;
@@ -212,4 +212,8 @@ a {
 
 #step_tabs {
 	text-align: right;
+}
+
+.w_100 {
+	width: 100%;
 }

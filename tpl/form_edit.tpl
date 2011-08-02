@@ -196,11 +196,6 @@
 						&nbsp;t: <input type="text" id="elem_add_options_text" value="" style="width: 20%;"/>
 						<button id="elem_add_options">Добавить option</button>
 					</div>
-
-					<div class="my_form_elem">
-						<div class="my_form_elem_title"><label for="elem_50">50%: </label></div>
-						<input type="checkbox" id="elem_50" />
-					</div>
 					
 					<div class="my_form_elem">
 						<div class="my_form_elem_title">Columns: </div>
@@ -227,10 +222,15 @@
 				</div>
 				<div id="tabs-3">
 					<div id="progressbar"></div>
-					<button id="save_form">Сохранить</button>
-					<button id="download_form">Загрузить</button>
-					<div id="download_dialog" style="display: none;"></div>
-					<a href="get_html.php" target="blank" class="button">View</a>
+					<button id="save_form" class="w_100">Сохранить форму в БД</button>
+					<button id="download_form" class="w_100">Посмотреть исходный код формы</button>
+						<div id="download_dialog" style="display: none;"></div>
+					<a href="get_html.php" target="blank" class="button w_100">Протестировать форму</a>
+					<br />
+					Имя формы: <input type="text" id="form_name" value="{$form_name}" /><br />
+					Раздел: <select id="form_sub_project">{$form_sub_project}</select><br />
+					<button id="save_form_name" class="w_100">Сохранить данные формы</button><br />
+					<span id="save_form_name_message"></span>
 				</div>
 				<br/>
 			</div>

@@ -5,11 +5,11 @@
 	<h3>Добавить пользователя к проекту</h3>
 	<hr />
 	<form>
-		<select id="users">
+		Пользователь: <select id="users">
 			{$users}
 		</select>
 		<br />
-		<select id="projects">
+		Проект: <select id="projects">
 			{$projects}
 		</select>
 		<br />		

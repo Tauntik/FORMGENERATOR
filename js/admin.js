@@ -20,6 +20,8 @@ $(document).ready(function(){
 				} else if (data == "false"){
 					$("#submit").html("Добавить");
 					$("#message").html("Пользователя нет в выбранном проекте!");
+				} else {
+					$("#message").html("Произошла ошибка при отправке!");
 				}
 			}
 		});

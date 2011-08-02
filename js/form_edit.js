@@ -3,6 +3,8 @@
 //_TODO перетаскивание элемента при добавлении
 //_TODO бегующий курсор
 //_TODO добавление множества колонок
+//_TODO если элемент не выделен на 2ой вкладке остаются кнопки "сохранить" и "удалить"
+
 
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
@@ -28,26 +30,26 @@ var count_step_tab = 1;
  
 
 
-  function getParam(str){
-var tmp = new Array();      // два вспомагательных    
-var tmp2 = new Array();     // массива    
-var param = new Array();    
-        
-var get = location.search;  // строка GET запроса    
-if(get != '')    
-{    
-    tmp = (get.substr(1)).split('&');   // разделяем переменные    
-    for(var i=0; i < tmp.length; i++)    
-    {    
-        tmp2 = tmp[i].split('=');       // массив param будет содержать    
-        param[tmp2[0]] = tmp2[1];       // пары ключ(имя переменной)->значение    
-    }    
-    var obj = document.getElementById('greq');  // вывод на экран    
-  
-    
+function getParam(str){
+	var tmp = new Array();      // два вспомагательных    
+	var tmp2 = new Array();     // массива    
+	var param = new Array();    
+			
+	var get = location.search;  // строка GET запроса    
+	if(get != '')    
+	{    
+		tmp = (get.substr(1)).split('&');   // разделяем переменные    
+		for(var i=0; i < tmp.length; i++)    
+		{    
+			tmp2 = tmp[i].split('=');       // массив param будет содержать    
+			param[tmp2[0]] = tmp2[1];       // пары ключ(имя переменной)->значение    
+		}    
+		var obj = document.getElementById('greq');  // вывод на экран    
+	  
+		
+	}
+	return param[str]
 }
-		return param[str]
-   }
 
 
 
@@ -56,7 +58,13 @@ function add_step_tab(){
 	//var selected = $( "#step_tabs" ).tabs( "option", "selected" );
 	count_step_tab++;
 	//$( "#step_tabs" ).tabs( "length" )
-	current_step_tab = "#step_" + count_step_tab;
+	var n = count_step_tab;
+	while ($("#step_" + n).length > 0) {
+		alert("++");
+		n++;
+	}
+	
+	current_step_tab = "#step_" + n;
 	$( "#step_tabs" ).tabs( "add" , current_step_tab, "Шаг " + count_step_tab, count_step_tab - 1);
 	$( "#step_tabs" ).tabs( "select" , count_step_tab - 1 );
 }
@@ -64,16 +72,24 @@ function add_step_tab(){
 //Удаление шага формы
 function delete_step_tab(){
 	//var selected = $( "#step_tabs" ).tabs( "option", "selected" );
-	if (count_step_tab > 1) {
+	if ( ($( "#step_tabs" ).tabs( "length" ) - 2) > 1) {
 		
-		//$( "#step_tabs" ).tabs( "length" )
-		var for_del = current_step_tab;
+		//alert($( "#step_tabs" ).tabs( "length" )-2);
+		//<a href="#step_2"><span>Шаг 2</span></a>
+		
+		var for_del = current_step_tab; //"#step_*"
 		$( "#step_tabs" ).tabs( "select" , 0 );
 		$( "#step_tabs" ).tabs( "remove" , for_del);
-		
-				
-		//$( "#step_tabs" ).tabs( "select" , 0 );
+
 		count_step_tab--;
+		
+		var n = 0;
+		$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
+			n++;
+			$(this).html("<span>Шаг " + n + "</span>");
+		});
+		
+		
 	}	
 }
 
@@ -140,7 +156,7 @@ function get_elem_html(obj) {
 	
 	var el_col = obj.elem_columns;
 	if (!el_col) el_col = 1;
-	var percent = (100 / el_col) - 2;
+	var percent = (100 / el_col) - 1;
 	var form_elem = jQuery('<div>', {
 						elem_type: obj.type,
 						'class': 'form_elem',
@@ -314,7 +330,12 @@ function show_hide_elem_panel() {
 	
 	
 	
-	if (!b.type) return false;
+	if (!b.type) {
+		$("#save_elem, #delete_elem").hide();
+		return false;
+	} else {
+		$("#save_elem, #delete_elem").show();
+	}
 	
 	//Очищаем все значения элементов для редактирования
 	$("#elem_del_options_select").html("");
@@ -381,9 +402,7 @@ function show_hide_elem_panel() {
 		$("#elem_italic").attr('checked', 'checked');
 	}
 	
-	if (b.elem_50) {
-		$("#elem_50").attr('checked', 'checked');
-	}
+
 	
 	$("#elem_align option[value=" + b.elem_align + "]").attr('selected', 'selected');
 	$("#elem_h option[value=" + b.elem_h + "]").attr('selected', 'selected');
@@ -482,7 +501,7 @@ function show_hide_elem_panel() {
 			break;
 	}
 	
-	$("#elem_50").parent().show();
+
 	for (var keyVar in properties ) {
 		if (properties[keyVar]) $("#" + keyVar).parent().show();
 	}
@@ -491,10 +510,15 @@ function show_hide_elem_panel() {
 
 //Отправка JSON на сервер и сохранение в БД
 function save_form(){
+	var n = 0;
+	$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
+		n++;		
+		$($(this).attr('href') + " .form_elem").attr('step', n);
+	});
 	
-	for (var i = 0; i < count_step_tab; i++) {
-		$("#step_" + (i + 1) + " .form_elem").attr('step', (i + 1));
-	}
+	//for (var i = 0; i < count_step_tab; i++) {
+	//	$("#step_" + (i + 1) + " .form_elem").attr('step', (i + 1));
+	//}
 	var obj_mass = new Array();
 	$(".form_elem").each(function(){
 		var js = $(this).attr('json');		
@@ -642,8 +666,28 @@ $(document).ready(function(){
 			   current_step_tab = "#" + ui.panel.id;
 			}
 		}
-	});
-	
+	}).find( ".ui-tabs-nav" ).sortable({
+								axis: "x",
+								delay: 300,
+								start: function(event, ui) {
+									if (ui.item.children("a").attr('href') == "#step_add") {
+										//$(this).sortable( "refresh" );
+									}
+									//alert(ui.li.id);
+									//$("a[href^=#step_add], a[href^=#step_delete]").parent().hide();
+								},
+								stop: function(event, ui) {
+									var n = 0;
+									$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
+										n++;
+										$(this).html("<span>Шаг " + n + "</span>");
+									});
+									var aff = $("a[href^=#step_add], a[href^=#step_delete]").parent().parent();
+									aff.append($("a[href^=#step_add], a[href^=#step_delete]").parent());
+									//$(this).sortable('refresh');
+								}
+							});
+	$(".ui-tabs-nav a").css('cursor', 'pointer');
 	//Сохранение элемента формы (добавление атрибута JSON к DIV`у элемента) при редактировании - для чекбоксов
 	$("#tabs-2 input[type=checkbox]").live('change keyup keydown', function(){
 		$("#save_elem").click();
@@ -721,13 +765,20 @@ $(document).ready(function(){
 	//нажатие на элемент формы в "#content"
 	$(".form_elem").live('click', function(){
 		$("#save_elem").click();
+		if ($(this).attr('sel') == 'sel') {
+			return false;
+		}
 		$(".form_elem").removeClass('ui-widget-header ui-corner-all');
 		$(".form_elem").removeAttr('sel');
 		//$(this).addClass('form_elem_sel');
 		$(this).addClass("ui-widget-header ui-corner-all");
 		$(this).attr('sel', 'sel');		
+		
+		
+		
 		$( "#tabs" ).tabs( "select" , 1 );
-		show_hide_elem_panel();	
+		show_hide_elem_panel();
+		
 	});
 	
 	//кнопка "Сохранить элемент" на панели редактирования
@@ -762,7 +813,7 @@ $(document).ready(function(){
 		if ($("#elem_bold").attr('checked') == "checked") b.elem_bold = true;
 		if ($("#elem_italic").attr('checked') == "checked") b.elem_italic = true;
 		if ($("#elem_onchange").attr('checked') == 'checked') b.elem_onchange = true;
-		if ($("#elem_50").attr('checked') == 'checked') b.elem_50 = true;
+		
 		
 		b.select_options = new Array();
 		var i = 0;
@@ -821,25 +872,57 @@ $(document).ready(function(){
 			width: 900,
 			modal: true,
 			buttons: {
-				"Delete all items": function() {
-					$( this ).dialog( "close" );
-				},
-				Cancel: function() {
+				"Ok": function() {
 					$( this ).dialog( "close" );
 				}
 			}
 		});
 		
 		$.ajax({
-			url: "get_html.php",
-			type : "GET",
+			url: "index.php",
+			type : "POST",
+			data : {
+				request: "get_form_html",
+				'form_id': getParam("form_id")
+			},
 			dataType: "text",
 			success: function(data){
-				$( "#download_dialog" ).html("<xmp>" + data + "</xmp>");
+				if (data != "error") {
+					$( "#download_dialog" ).html("<xmp>" + data + "</xmp>");
+				}
 			}
 		});
+
 		
 		//$( "#download_dialog" ).load("get_html.php");
 	});
+	
+	
+	
+	//нажата сохранить данные формы
+	$("#save_form_name").click(function(){
+		
+		
+		$.ajax({
+			url: "index.php",
+			type : "POST",
+			data : {
+				request: "set_form_name",
+				'form_name': $("#form_name").val(),
+				'form_sub_project': $("#form_sub_project").val()
+			},
+			dataType: "text",
+			success: function(data){
+				if (data == "true") {
+					$("#save_form_name_message").html("Данные формы успешно изменены!");
+				} else {
+					$("#save_form_name_message").html("Произошла ошибка!");
+					setTimeout('$("#save_form_name_message").html("");', 5000);
+				}
+			}
+		});
+	});
+	
+	
 	
 });
