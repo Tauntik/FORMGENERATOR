@@ -28,7 +28,7 @@ var elem_count = 0;
 var current_step_tab = "#step_1";
 var count_step_tab = 1;
 var elem_accept_hover = true;
- 
+var default_state = "";
 
 var history = new Array();
 var history_inc = -1;
@@ -45,7 +45,7 @@ function history_add() {
 		var js = $(this).attr('json');		
 		var obj = JSON.parse(js);
 		obj.step = $(this).attr('step');
-		
+		obj.target_step = $( "#step_tabs" ).tabs( "option", "selected" );
 		
 		obj_mass.push(obj);
 	});
@@ -101,7 +101,7 @@ function add_step_tab(){
 	//$( "#step_tabs" ).tabs( "length" )
 	var n = count_step_tab;
 	while ($("#step_" + n).length > 0) {
-		alert("++");
+		//alert("++");
 		n++;
 	}
 	
@@ -653,6 +653,7 @@ function load_form(){
 					
 					$(".form_elem").not("#step_tabs .form_elem").remove();
 					elem_accept_hover = true;
+					history_add();
 				}				
 			});
 			history_add();
@@ -674,7 +675,7 @@ function load_form(){
 //Document_Ready
 $(document).ready(function(){
 	
-	load_form();
+	
 	
 	
 	jQuery(document).bind('keydown', function (evt){
@@ -722,26 +723,19 @@ $(document).ready(function(){
 			}
 		}
 	}).find( ".ui-tabs-nav" ).sortable({
-								axis: "x",
-								delay: 300,
-								start: function(event, ui) {
-									if (ui.item.children("a").attr('href') == "#step_add") {
-										//$(this).sortable( "refresh" );
-									}
-									//alert(ui.li.id);
-									//$("a[href^=#step_add], a[href^=#step_delete]").parent().hide();
-								},
-								stop: function(event, ui) {
-									var n = 0;
-									$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
-										n++;
-										$(this).html("<span>Шаг " + n + "</span>");
-									});
-									var aff = $("a[href^=#step_add], a[href^=#step_delete]").parent().parent();
-									aff.append($("a[href^=#step_add], a[href^=#step_delete]").parent());
-									
-								}
-							});
+		axis: "x",
+		delay: 300,
+		stop: function(event, ui) {
+			var n = 0;
+			$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
+				n++;
+				$(this).html("<span>Шаг " + n + "</span>");
+			});
+			var aff = $("a[href^=#step_add], a[href^=#step_delete]").parent().parent();
+			aff.append($("a[href^=#step_add], a[href^=#step_delete]").parent());
+			
+		}
+	});
 	$(".ui-tabs-nav a").css('cursor', 'pointer');
 	//Сохранение элемента формы (добавление атрибута JSON к DIV`у элемента) при редактировании - для чекбоксов
 	$("#tabs-2 input[type=checkbox]").live('change keyup keydown', function(){
@@ -1004,22 +998,31 @@ $(document).ready(function(){
 			$("#form_back").button( "disable" );
 			return true;
 		}
-		$("#step_1, #step_2, #step_3, #step_4").html("");
+		//$("#step_1, #step_2, #step_3, #step_4").html("");
+		$("#step_tabs").html(default_state);
 		
+		count_step_tab = 0;
+		var abs;
 		for (i = 0; i < history[history_inc - 1].length; i++) {		
-			var abs = history[history_inc - 1][i];
+			abs = history[history_inc - 1][i];
 			var st = abs.step;
 			//alert(abs.step);
+			
 			while (st > count_step_tab) {
+				//alert(st);
 				add_step_tab();
 			}
 			
 			$("#step_" + st).append(get_elem_html(abs));
 		}
 		
+		$( "#step_tabs" ).tabs( "select" , abs.target_step );
+		$( "#tabs" ).tabs( "select" , 2 );
+		
 		history_inc--;
 		if (history_inc == 0) $("#form_back").button( "disable" );
 		$("#form_forward").button( "enable" );
+		eee();
 	});
 	
 	$("#form_forward").click(function(){
@@ -1029,10 +1032,13 @@ $(document).ready(function(){
 			return true;
 		}
 		
-		$("#step_1, #step_2, #step_3, #step_4").html("");
+		//$("#step_1, #step_2, #step_3, #step_4").html("");
+		$("#step_tabs").html(default_state);
 		
+		count_step_tab = 0;
+		var abs;
 		for (i = 0; i < history[history_inc + 1].length; i++) {
-			var abs = history[history_inc + 1][i];
+			abs = history[history_inc + 1][i];
 			var st = abs.step;
 			//alert(abs.step);
 			while (st > count_step_tab) {
@@ -1042,10 +1048,35 @@ $(document).ready(function(){
 			$("#step_" + st).append(get_elem_html(abs));
 		}
 		
+		$( "#step_tabs" ).tabs( "select" , abs.target_step );
+		$( "#tabs" ).tabs( "select" , 2 );
+		
 		history_inc++;
 		if (history_inc ==  history.length - 1) $("#form_forward").button( "disable" );
 			
 		$("#form_back").button( "enable" );
+		eee();
 	});
 	
+	default_state = $("#step_tabs").html();
+	load_form();
 });
+
+
+
+function eee() {
+	$("#step_tabs").find( ".ui-tabs-nav" ).sortable({
+		axis: "x",
+		delay: 300,
+		stop: function(event, ui) {
+			var n = 0;
+			$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
+				n++;
+				$(this).html("<span>Шаг " + n + "</span>");
+			});
+			var aff = $("a[href^=#step_add], a[href^=#step_delete]").parent().parent();
+			aff.append($("a[href^=#step_add], a[href^=#step_delete]").parent());
+			history_add();
+		}
+	});
+}

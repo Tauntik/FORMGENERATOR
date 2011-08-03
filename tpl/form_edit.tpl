@@ -231,7 +231,7 @@
 					Раздел: <select id="form_sub_project">{$form_sub_project}</select><br />
 					<button id="save_form_name" class="w_100">Сохранить данные формы</button><br />
 					<span id="save_form_name_message"></span><br />
-					<button id="form_back" ><-</button>
+					<button id="form_back" disabled="disabled" ><-</button>
 					<button id="form_forward" disabled="disabled" >-></button>
 					
 					
