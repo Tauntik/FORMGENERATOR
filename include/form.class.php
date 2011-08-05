@@ -45,7 +45,6 @@ class form {
     	$array_json = json_decode($json);
 		foreach ($array_json as $k => $v) {
 			foreach ($v as $kk => $vv) {
-				echo($k." ".$kk);
 				if (!$vv) {
 					unset($array_json[$k] -> $kk);
 				}
