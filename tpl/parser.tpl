@@ -1,3 +1,4 @@
+{$elements_obj|@var_dump}
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
 
@@ -273,7 +274,7 @@ function bindCalendar() {
 <div class="menu_cont form_step">
 	{section name=eee start=1 loop=$max_step+1 step=1}
 		<div class="menu1 div2" id="menu_step_{$smarty.section.eee.index}">Шаг {$smarty.section.eee.index}</div>
-    {/section}		
+    {/section}
 </div>	
 <div class="hint_div">Отмеченные <font style="color:red">*</font> поля обязательны для заполнения.</div><br />
 
@@ -281,11 +282,22 @@ function bindCalendar() {
 {section name=eee start=1 loop=$max_step+1 step=1}
 <!-- Шаг{$smarty.section.eee.index}------------------------------------------------------------------------------------------------------>
 	<div class="step" id="step_{$smarty.section.eee.index}" style="display:{if $smarty.section.eee.index==1}block{else}none{/if}">
+		{$max_column = $max_columns[$smarty.section.eee.index]}
+		{assign key ="count_element_tr" value = "0"}
 		<table width="100%">
 		{foreach from=$elements[$smarty.section.eee.index] item=item}
-			{$item}
+		
+			<tr>
+				<td>
+					
+				</td>
+			</tr>
+			узнаю колумн элемента
+			усли 1 то колспан 2
+						
+			{$item.elem_title}<br/>
 		{/foreach}
-		</table>	
+		</table>
 	</div>
 {/section}
 
