@@ -65,7 +65,6 @@ class form {
 		foreach ($array_json as $k => $v) {
 			$array_values[$v['step']][] = $v;
 		}
-		print_r( $array_values);
 		return $array_values;
 	}
 
