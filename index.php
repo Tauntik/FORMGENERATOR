@@ -113,12 +113,14 @@
 					$smarty -> display('tpl/error.tpl');
 				}
 				else {
-					$array_json 	= $form -> get_html($formid);
-					$max_step 		= $form -> get_max_step($formid);
-					$array_values 	= $form -> get_array_steps_key($formid);
+					$array_json 		= $form -> get_html($formid);
+					$max_step 			= $form -> get_max_step($formid);
+					$array_max_columns 	= $form -> get_array_max_columns($formid);
+					$array_values 		= $form -> get_array_steps_key($formid);
 					$smarty -> assign('elements', $array_values);
 					$smarty -> assign('elements_obj', $array_json);
 					$smarty -> assign('max_step', $max_step);
+					$smarty -> assign('max_columns', $array_max_columns);
 					$smarty -> display('tpl/parser.tpl');
 					
 				}

@@ -42,8 +42,21 @@ class form {
 	// Отдать количество шагов клиенту
 	public function get_max_step ($formid) {
 		$max_step = 0;
-		$json = $this -> get_json($formid);
-    	$array_json = json_decode($json);
+		$array_json = $this -> get_html($formid);
+		foreach ($array_json as $k => $v) {
+			foreach ($v as $key => $value) {
+				if (($key == 'step') && ($value > $max_step)) {
+					$max_step = $value;
+				}
+			}
+		}
+		return $max_step;
+	}
+	
+	// Отдать максимальное количество колонок клиенту
+	public function get_array_max_columns ($formid) {
+		$array_max_columns = array();
+		$array_json = $this -> get_html($formid);
 		foreach ($array_json as $k => $v) {
 			foreach ($v as $key => $value) {
 				if (($key == 'step') && ($value > $max_step)) {
@@ -68,8 +81,9 @@ class form {
 		return $array_values;
 	}
 
-	// Отдаем пользователю html код формы
+	// Отдаем клиенту массив json
 	public function get_html ($formid) {
+		$array_json =array();
 		$json = $this -> get_json($formid);
     	$array_json = json_decode($json);
 		foreach ($array_json as $k => $v) {
@@ -278,6 +292,9 @@ class form {
 		db::db_connect();		
 		$this -> sql = "SELECT sub_projectid FROM forms WHERE id=$formid";
 		$res = db::mq($this -> sql);
+		if (!mysql_num_rows($res)) {
+			return false;
+		}
 		$formsubid = mysql_result($res,0,0);
 		foreach ($allow_subprj  as $arr_prj) {
 			if(in_array($formsubid, $arr_prj)) {

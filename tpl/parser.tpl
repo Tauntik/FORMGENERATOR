@@ -283,19 +283,46 @@ function bindCalendar() {
 <!-- Шаг{$smarty.section.eee.index}------------------------------------------------------------------------------------------------------>
 	<div class="step" id="step_{$smarty.section.eee.index}" style="display:{if $smarty.section.eee.index==1}block{else}none{/if}">
 		{$max_column = $max_columns[$smarty.section.eee.index]}
-		{assign key ="count_element_tr" value = "0"}
+		{assign var ="count_element_tr" value = 0}
+		{assign var ="count_continue" value = 0}
 		<table width="100%">
 		{foreach from=$elements[$smarty.section.eee.index] item=item}
-		
+            {if $item.elem_columns > 1}
+                {$count_element_tr = $item.elem_columns}
+            {else}
+            	{if $count_continue > 0}
+                {$count_continue = $count_continue - 1}
+                {php}
+                continue;
+                {/php}
+                {/if}
+            {/if}
+            
+			{if !$count_element_tr}
 			<tr>
+            	<td>
+                	title
+            	</td>
 				<td>
-					
+					element
 				</td>
 			</tr>
-			узнаю колумн элемента
-			усли 1 то колспан 2
-						
-			{$item.elem_title}<br/>
+            {else}
+            	<table width="100%">
+                	<tr>
+                    {$count_continue = $count_element_tr}
+                    {section name=elem_td start=$smarty.section.eee.index loop=$smarty.section.eee.index + $count_element_tr step=1}
+                    {$count_element_tr = $count_element_tr - 1}
+                  	<td>
+                        	title тт
+                        </td>
+                    	<td>
+                        	element тт
+                        </td>
+                    {/section} 
+                    </tr>
+                </table>
+            {/if}						
 		{/foreach}
 		</table>
 	</div>
