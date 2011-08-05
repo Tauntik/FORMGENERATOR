@@ -39,6 +39,36 @@ class form {
 		
 	}
 	
+	// Отдать количество шагов клиенту
+	public function get_max_step ($formid) {
+		$max_step = 0;
+		$json = $this -> get_json($formid);
+    	$array_json = json_decode($json);
+		foreach ($array_json as $k => $v) {
+			foreach ($v as $key => $value) {
+				if (($key == 'step') && ($value > $max_step)) {
+					$max_step = $value;
+				}
+			}
+		}
+		return $max_step;
+	}
+	
+	// Формируем массив, где ключ = шаг, значение - массив всех объектов первого шага
+	public function get_array_steps_key ($formid) {
+    	$array_json = (array) $this -> get_html($formid);
+		foreach ($array_json as $k => $v) {
+			$array_json[$k] = (array) $v;
+		}
+		
+		// Создаем массив
+		foreach ($array_json as $k => $v) {
+			$array_values[$v['step']][] = $v;
+		}
+		print_r( $array_values);
+		return $array_values;
+	}
+
 	// Отдаем пользователю html код формы
 	public function get_html ($formid) {
 		$json = $this -> get_json($formid);
