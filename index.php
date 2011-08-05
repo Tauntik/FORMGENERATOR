@@ -9,11 +9,21 @@
 	require_once ('include/user.class.php');
 	require_once ('include/form.class.php');
 	
-	$smarty = new Smarty;
-	$smarty -> template_dir = 'tpl/';
-	$page   = isset($_REQUEST['page'])?$_REQUEST['page']:'';
-	$form   = new form();
-	$data   = new user();
+	$smarty 		= new Smarty;
+	$smarty 		-> template_dir = 'tpl/';
+	$page   		= isset($_REQUEST['page'])?$_REQUEST['page']:'';
+	$form  		 	= new form();
+	$user_class   	= new user();
+
+	// Проверяем, если есть form_id, то смотрим, имеет ли к нему доступ юзверь
+	if(isset($_SESSION['id']) && isset($_REQUEST['form_id']) && $_REQUEST['form_id']) {
+		$allow_access = $form -> check_allow_form($_SESSION['id'], $_REQUEST['form_id']);
+		if (!$allow_access) {
+			$smarty -> assign('error', 'Нет прав для просмотра данной формы');
+			$smarty -> display('tpl/error.tpl');
+			exit();
+		}
+	}
 
 	// Обрабатываем различные ответы от клиента, переданные в POST массиве
 	$request = isset ($_POST['request']) ? $_POST['request'] : '';
@@ -66,7 +76,7 @@
 				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
 				$projectid = isset($_POST['id_project']) ? $_POST['id_project'] : '';
 				if ($userid && $projectid) {
-					$user_in_project = $data -> user_in_project($userid, $projectid, false);		// true если доступен проект и false если недоступен
+					$user_in_project = $user_class -> user_in_project($userid, $projectid, false);		// true если доступен проект и false если недоступен
 					echo ($user_in_project);
 				}
 				exit();
@@ -75,14 +85,14 @@
 			case 'set_user_in_project':
 				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
 				$projectid = isset($_POST['id_project']) ? $_POST['id_project'] : '';
-				$user_in_project = $data -> user_in_project($userid, $projectid, true);		// если успешная операция true, иначе - false
+				$user_in_project = $user_class -> user_in_project($userid, $projectid, true);		// если успешная операция true, иначе - false
 				echo ($user_in_project);
 				exit();
 			break;
 			
 			case 'delete_user':
 				$userid = isset($_POST['id_user']) ? $_POST['id_user'] : '';
-				$result_delete = $data -> user_delete($userid);		// если удалили "deleted", "еrror" если не удалили
+				$result_delete = $user_class -> user_delete($userid);		// если удалили "deleted", "еrror" если не удалили
 				echo($result_delete);
 				exit();
 			break;
@@ -91,9 +101,24 @@
 				$login = isset($_POST['user_login']) ? $_POST['user_login'] : '';
 				$email = isset($_POST['user_email']) ? $_POST['user_email'] : '';
 				$name = isset($_POST['user_name']) ? $_POST['user_name'] : '';
-				$result_add = $data -> user_add($login, $email, $name);		// если удалили "deleted", "еrror" если не удалили
+				$result_add = $user_class -> user_add($login, $email, $name);		// если удалили "deleted", "еrror" если не удалили
 				$result_add = base64_encode($result_add);
 				header("Location: ?page=admin&error=$result_add");
+			break;
+			
+			case 'get_form_html':
+				$formid = isset($_REQUEST['form_id']) ? $_POST['form_id'] : '';
+				if (!$formid) {
+					$smarty -> assign('error', 'Ошибка при передачи формы');
+					$smarty -> display('tpl/error.tpl');
+				}
+				else {
+					$array_json = $form -> get_html($formid);
+					$smarty -> assign('elements_obj', $array_json);
+					$smarty -> display('tpl/parser.tpl');
+					
+				}
+				exit();
 			break;
 
 			default: 
@@ -111,7 +136,7 @@
 		case 'form_edit':
 			if(isset($_SESSION['id'])) {
 				$json = '';
-				$user = $data -> get_array_user($_SESSION['id']);
+				$user = $user_class -> get_array_user($_SESSION['id']);
 				if(!count($user)) {
 					$smarty -> assign('error', 'Такого пользователя не существует!');
 					$smarty -> display('tpl/error.tpl');
@@ -144,7 +169,7 @@
 			if(isset($_SESSION['id'])) {
 				$projects = $form -> get_allow_projects();
 				$smarty -> assign ('projects', $projects);
-				$user = $data -> get_array_user($_SESSION['id']);
+				$user = $user_class -> get_array_user($_SESSION['id']);
 				$smarty -> display ('tpl/form_browse.tpl');
 			}
 			else {
@@ -161,7 +186,7 @@
 			}
 			else {
 				// Логинимся
-				$insite = $data->login($login, $password, $capcha);
+				$insite = $user_class->login($login, $password, $capcha);
 				if ($insite&&isset($_SESSION['id'])) {
 					$smarty -> assign ('user', $user);
 					$smarty -> display('tpl/form_browse.tpl');
@@ -175,12 +200,12 @@
 		break;
 		
 		case 'logout':
-			$data -> logout();
+			$user_class -> logout();
 			header("Location: ?page=login");
 		break;
 		
 		case 'admin':
-			$users    = $data -> get_users();
+			$users    = $user_class -> get_users();
 			$projects = $form -> get_projects();
 			$smarty -> assign('users', $users);
 			$smarty -> assign('projects', $projects);	
@@ -193,6 +218,10 @@
 				$smarty -> assign('error', 'Недостаточно прав.');
 				$smarty -> display('tpl/error.tpl');
 			}
+		break;
+		
+		case 'parser':
+
 		break;
 		
 		default:
@@ -210,3 +239,5 @@
 			}
 		break;		
 	}
+		//$form -> get_html_gosuslugi(1);
+

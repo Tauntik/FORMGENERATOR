@@ -43,15 +43,42 @@ class form {
 	public function get_html ($formid) {
 		$json = $this -> get_json($formid);
     	$array_json = json_decode($json);
-		print_r($array_json);
+		return $array_json;
 	}
 	
 	// Отдаем пользователю html код формы без заголовков в стиле gosuslugi.ru
 	public function get_html_gosuslugi ($formid) {
-		$count_elem_on_tr = 0;		// Количество элементов на странице
-		$html = '<table>';
+	//	$count_elem_on_tr = 0;		// Количество элементов на странице
+	//	$html = '<table>';
 		$json = $this -> get_json($formid);
     	$array_json = json_decode($json);
+		
+		return $array_json;
+		
+/*		//$scripts .= "<script type='text/javascript'>\n";
+		$scripts .= "// заполняем массив values для вывода 'примера заполнения' и подсказок\n";
+		foreach ($array_json as $k => $v) {
+			if ($v -> elem_example) {
+				$scripts .= "values.push (new Array('{$v -> elem_id}', '{$v -> elem_example}') );\n";
+			}
+		}
+		$scripts .= "\n";
+		
+		$scripts .="// показывает/скрывает пример заполнения
+		function show_hide_example() {
+			if ($(\"#show_example_container\").is(\":visible\")) {
+				showExample();
+				$(\"#show_example_container\").hide();
+				$(\"#hide_example_container\").show();
+			} else {
+				clearForm();
+				$(\"#show_example_container\").show();
+				$(\"#hide_example_container\").hide();
+			}
+		}\n";
+
+		echo($scripts);
+
 		foreach ($array_json as $k => $field) {
 			$count_elem_on_tr++ ;
 			if ($field -> elem_columns == $count_elem_on_tr) {
@@ -95,6 +122,7 @@ class form {
 			}
 				print_r($field);echo("<br><br>");
 		}
+		*/
 	}
 	
 	// Получает json
@@ -111,13 +139,14 @@ class form {
 	}
 	
 	// Получить все доступные проекты для текущего пользователя
-	public function get_allow_projects () {
+	public function get_allow_projects ($userid = 0) {
+		if (!$userid) $userid = $_SESSION['id'];
 		$allow_projects = array();
 		$projects = array();
 		
 		db::db_connect();
 
-		$this -> sql = "SELECT * FROM users_projects where userid = {$_SESSION['id']}";
+		$this -> sql = "SELECT * FROM users_projects where userid = $userid";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
 			$allow_projects[] = $r['projectid'];
@@ -138,15 +167,22 @@ class form {
 	}
 	
 	// Получить все доступные формы ведомства
-	public function get_sub_projects ($projectid) {
+	public function get_sub_projects ($projectid, $with_options = true) {
+		$sub_projects_ids = array();
 		$sub_projects = "<option value='0'>Не выбрано</option>";
 		db::db_connect();
 		$this -> sql = "SELECT * FROM sub_projects WHERE projectid = $projectid";
 		$res = db::mq($this -> sql);
 		while ($r = mysql_fetch_assoc($res)) {
+			$sub_projects_ids[] = $r['id'];
 			$sub_projects .= "<option value='{$r['id']}'>{$r['name']}</option>";
 		}
-		return $sub_projects;
+		if ($with_options) {
+			return $sub_projects;
+		}
+		else {
+			return $sub_projects_ids;
+		}
 	}
 	
 	// Получить все доступные формы пользователю в зависимости от того, к каким проектам он привязан
@@ -195,5 +231,28 @@ class form {
 			$options .= "<option value='{$r['id']}'>{$r['name']}</option>";
 		}
 		return ($options) ;
+	}
+	
+	function check_allow_form ($userid, $formid) {
+		$allow_subprj = array();
+		$allow_prj = $this -> get_allow_projects ($userid);
+		foreach ($allow_prj as $k => $v) {
+			$allow_subprj[] = $this -> get_sub_projects ($v['id'], false);
+		}
+		db::db_connect();		
+		$this -> sql = "SELECT sub_projectid FROM forms WHERE id=$formid";
+		$res = db::mq($this -> sql);
+		$formsubid = mysql_result($res,0,0);
+		foreach ($allow_subprj  as $arr_prj) {
+			if(in_array($formsubid, $arr_prj)) {
+				$gut = true;
+			}
+		}
+		if($gut) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
