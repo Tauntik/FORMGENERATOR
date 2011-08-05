@@ -9,26 +9,38 @@
 //_TODO удаление по DELETE
 //_TODO при удалении остается панель редактирования инструмента
 //_TODO при добавлении элемента сделать чтобы он выделялся, чтобы последующие элементы вставлялись после него
+//_TODO сделать ctrl-z && ctrl-y
+//_TODO поправить <label> на чекбоксах панели инструментов
+//_TODO проверка на повторяющиеся id
 
-//TODO сделать ctrl-z && ctrl-y
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
 //TODO фунцкия создать дубликат элемента
 //TODO добавить HELP к элементам
 //TODO сделать при выборе класса http://jqueryui.com/demos/autocomplete/#multiple
-//TODO поправить <label> на чекбоксах панели инструментов
 
-//TODO проверка на повторяющиеся id
 //TODO сделать пример заполнения для <SELECT> <CHECKBOX>
 //TODO загрузка в SELECT файла с OPTION
 //TODO сделать готовые решения для масок
-
+//TODO TAB index add
 
 var elem_count = 0;
 var current_step_tab = "#step_1";
 var count_step_tab = 1;
 var elem_accept_hover = true;
 var default_state = "";
+
+
+function check_id(elem_id, _in) {
+	var a = 0;
+	$(".form_elem").each(function() {
+		if (elem_id == JSON.parse($(this).attr("json")).elem_id) {
+			a ++;
+		}
+	});
+	return (a > _in)?true:false;
+}
+
 
 var history = new Array();
 var history_inc = -1;
@@ -89,7 +101,7 @@ function getParam(str){
 	  
 		
 	}
-	return param[str]
+	return param[str];
 }
 
 
@@ -166,10 +178,9 @@ function delete_step_tab(){
 
  */
 function get_elem_html(obj) {
-	
-	
-	
-	while($(".form_elem[number=" + elem_count + "]").attr('elem_type')) {
+	elem_count = 0;
+
+	while(check_id("elem_" + elem_count, 0)) {
 		elem_count++;
 	}
 	
@@ -192,7 +203,7 @@ function get_elem_html(obj) {
 	
 	
 	
-	json = json.replace(/ /g, '&nbsp;');
+	//json = json.replace(/ /g, ' ');
 	
 	
 	var el_col = obj.elem_columns;
@@ -361,7 +372,6 @@ function get_elem_html(obj) {
 //Функция отображает/скрывает элементы редактирования полей формы в зависимости от типа выбранного поля
 //устанавливает параметры выделенного элемента
 function show_hide_elem_panel() {
-	
 	var json = $(".form_elem[sel=sel]").attr('json');
 	if (!json) {json = '{}';}		
 	var b = JSON.parse(json);
@@ -369,7 +379,9 @@ function show_hide_elem_panel() {
 	//скрываем все элементы редактирования
 	$(".my_form_elem").hide();
 	
-	
+	if (check_id(b.elem_id, 1)) {
+		alert("Id \"= " + b.elem_id + "\" уже используется!");
+	}
 	
 	if (!b.type) {
 		$("#save_elem, #delete_elem").hide();
@@ -701,7 +713,9 @@ $(document).ready(function(){
 	
 	//Добавление jQuery UI Tabs к элементам
 	$( "#tabs" ).tabs({
-		show: function(event, ui) {show_hide_elem_panel();}
+		show: function(event, ui) {
+			//show_hide_elem_panel();
+		}
 	});
 	
 	//Добавление jQuery UI Tabs к элементам
@@ -752,7 +766,9 @@ $(document).ready(function(){
 		if ($(this).val() && (ch)) {
 			$("#save_elem").click();
 		}		
-	});	
+	});
+
+	
 	
 	//При изменении Id меняется и Name
 	$("#elem_id").live('change keyup', function(){
@@ -803,7 +819,8 @@ $(document).ready(function(){
 			buttonImageOnly: true
 		});
 		
-		//$("#save_elem").click();		
+		//$("#save_elem").click();
+		show_hide_elem_panel();
 		history_add();
 	});
 	
