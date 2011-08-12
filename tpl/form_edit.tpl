@@ -84,7 +84,7 @@
 					</div>
 
 					<div class="my_form_elem">
-						<div class="my_form_elem_title">Digits: </div>
+						<div class="my_form_elem_title"><label for="elem_digits">Digits: </label></div>
 						<input type="checkbox" id="elem_digits" />
 					</div>
 
@@ -99,17 +99,17 @@
 					</div>
 
 					<div class="my_form_elem">
-						<div class="my_form_elem_title">Number: </div>
+						<div class="my_form_elem_title"><label for="elem_number">Number: </label></div>
 						<input type="checkbox" id="elem_number" />
 					</div>
 
 					<div class="my_form_elem">
-						<div class="my_form_elem_title">Email: </div>
+						<div class="my_form_elem_title"><label for="elem_email">Email: </label></div>
 						<input type="checkbox" id="elem_email" />
 					</div>
 
 					<div class="my_form_elem">
-						<div class="my_form_elem_title">Url: </div>
+						<div class="my_form_elem_title"><label for="elem_url">Url: </label></div>
 						<input type="checkbox" id="elem_url" />
 					</div>
 					<!--
@@ -124,12 +124,12 @@
 					</div>
 
 					<div class="my_form_elem">
-						<div class="my_form_elem_title">Onchange: </div>
+						<div class="my_form_elem_title"><label for="elem_onchange">Onchange: </label></div>
 						<input type="checkbox" id="elem_onchange" value="" />
 					</div>
 
 					<div class="my_form_elem">
-						<div class="my_form_elem_title">Onclick: </div>
+						<div class="my_form_elem_title"><label for="elem_onclick">Onclick: </label></div>
 						<input type="checkbox" id="elem_onclick" value="" />
 					</div>
 
