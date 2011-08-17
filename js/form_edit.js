@@ -12,6 +12,7 @@
 //_TODO сделать ctrl-z && ctrl-y
 //_TODO поправить <label> на чекбоксах панели инструментов
 //_TODO проверка на повторяющиеся id
+//_TODO TAB index add
 
 //TODO К <Date> добавить дата в прошлом/будущем
 //TODO Добавить к <SELECT> возможность редактирования <OPTION>
@@ -22,7 +23,7 @@
 //TODO сделать пример заполнения для <SELECT> <CHECKBOX>
 //TODO загрузка в SELECT файла с OPTION
 //TODO сделать готовые решения для масок
-//TODO TAB index add
+
 
 var elem_count = 0;
 var current_step_tab = "#step_1";
