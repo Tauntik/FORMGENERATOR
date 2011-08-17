@@ -1,6 +1,7 @@
 {extends file="main.tpl"}
 	{block name="content"}
 	<script type="text/javascript" src="js/admin.js"></script>
+
 	
 	<h3>Добавить пользователя к проекту</h3>
 	<hr />
