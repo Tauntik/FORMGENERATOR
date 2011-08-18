@@ -184,6 +184,10 @@
 		break;
 		
 		case 'login':
+			if(isset($_SESSION['id']) && $_SESSION['id']) {
+				header("Location: ?page=form_browse");
+				exit();
+			}
 			$login    = isset($_POST['login'])?$_POST['login']:'';
 			$password = isset($_POST['password'])?$_POST['password']:'';
 			$capcha   = isset($_POST['capcha'])?$_POST['capcha']:'';
@@ -195,8 +199,8 @@
 				$insite = $user_class->login($login, $password, $capcha);
 				if ($insite&&isset($_SESSION['id'])) {
 					$smarty -> assign ('user', $user);
-					$smarty -> display('tpl/form_browse.tpl');
 					header("Location: ?page=form_browse");
+					//$smarty -> display('tpl/form_browse.tpl');
 				}
 				else {
 					$smarty -> assign('error_message', 'Вы ввели неверно авторизационные данные');
