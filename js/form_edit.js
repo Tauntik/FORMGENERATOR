@@ -43,9 +43,11 @@ function check_id(elem_id, _in) {
 }
 
 
-var history = new Array();
-var history_inc = -1;
-function history_add() {
+var user_history = new Array();
+
+var user_history_inc = -1;
+
+function user_history_add() {
 	
 	var n = 0;
 	$("a[href^=#step_]").not("a[href^=#step_add], a[href^=#step_delete]").each(function(){
@@ -63,16 +65,16 @@ function history_add() {
 		obj_mass.push(obj);
 	});
 	var js = JSON.stringify(obj_mass);
-	var js_ = JSON.stringify(history[history.length - 1]);
+	var js_ = JSON.stringify(user_history[user_history.length - 1]);
 
 	if (js == js_) {
 		//alert(1);
 	} else {
-		history_inc++;
-		history[history_inc] = obj_mass;
+		user_history_inc++;
+		user_history[user_history_inc] = obj_mass;
 		
-		
-		history.splice(history_inc + 1, history.length - history_inc);
+		//alert(user_history.toString);
+		user_history.splice(user_history_inc + 1, user_history.length - user_history_inc);
 		
 
 		
@@ -80,8 +82,8 @@ function history_add() {
 	//var js = JSON.stringify(obj_mass);
 	$("#form_forward").button( "disable" );
 	$("#form_back").button( "enable" );
-	//alert(history.length);
-	//console.log(history_inc);
+	//alert(user_history.length);
+	//console.log(user_history_inc);
 }
  
 function getParam(str){
@@ -666,10 +668,10 @@ function load_form(){
 					
 					$(".form_elem").not("#step_tabs .form_elem").remove();
 					elem_accept_hover = true;
-					history_add();
+					user_history_add();
 				}				
 			});
-			history_add();
+			user_history_add();
 		}
 	});
 	
@@ -822,7 +824,7 @@ $(document).ready(function(){
 		
 		//$("#save_elem").click();
 		show_hide_elem_panel();
-		history_add();
+		user_history_add();
 	});
 	
 	//фокус на элемент формы
@@ -919,7 +921,7 @@ $(document).ready(function(){
 		});
 		
 		
-		history_add();
+		user_history_add();
 		
 		
 	});
@@ -1012,7 +1014,7 @@ $(document).ready(function(){
 	
 	$("#form_back").click(function(){
 		
-		if (history_inc == 0) {
+		if (user_history_inc == 0) {
 			$("#form_back").button( "disable" );
 			return true;
 		}
@@ -1021,8 +1023,8 @@ $(document).ready(function(){
 		
 		count_step_tab = 0;
 		var abs;
-		for (i = 0; i < history[history_inc - 1].length; i++) {		
-			abs = history[history_inc - 1][i];
+		for (i = 0; i < user_history[user_history_inc - 1].length; i++) {		
+			abs = user_history[user_history_inc - 1][i];
 			var st = abs.step;
 			//alert(abs.step);
 			
@@ -1037,15 +1039,15 @@ $(document).ready(function(){
 		$( "#step_tabs" ).tabs( "select" , abs.target_step );
 		$( "#tabs" ).tabs( "select" , 2 );
 		
-		history_inc--;
-		if (history_inc == 0) $("#form_back").button( "disable" );
+		user_history_inc--;
+		if (user_history_inc == 0) $("#form_back").button( "disable" );
 		$("#form_forward").button( "enable" );
 		eee();
 	});
 	
 	$("#form_forward").click(function(){
 		
-		if (history_inc ==  history.length - 1) {
+		if (user_history_inc ==  user_history.length - 1) {
 			$("#form_forward").button( "disable" );
 			return true;
 		}
@@ -1055,8 +1057,8 @@ $(document).ready(function(){
 		
 		count_step_tab = 0;
 		var abs;
-		for (i = 0; i < history[history_inc + 1].length; i++) {
-			abs = history[history_inc + 1][i];
+		for (i = 0; i < user_history[user_history_inc + 1].length; i++) {
+			abs = user_history[user_history_inc + 1][i];
 			var st = abs.step;
 			//alert(abs.step);
 			while (st > count_step_tab) {
@@ -1069,8 +1071,8 @@ $(document).ready(function(){
 		$( "#step_tabs" ).tabs( "select" , abs.target_step );
 		$( "#tabs" ).tabs( "select" , 2 );
 		
-		history_inc++;
-		if (history_inc ==  history.length - 1) $("#form_forward").button( "disable" );
+		user_history_inc++;
+		if (user_history_inc ==  user_history.length - 1) $("#form_forward").button( "disable" );
 			
 		$("#form_back").button( "enable" );
 		eee();
@@ -1094,7 +1096,7 @@ function eee() {
 			});
 			var aff = $("a[href^=#step_add], a[href^=#step_delete]").parent().parent();
 			aff.append($("a[href^=#step_add], a[href^=#step_delete]").parent());
-			history_add();
+			user_history_add();
 		}
 	});
 }
