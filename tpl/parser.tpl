@@ -1,4 +1,4 @@
-{$elements_obj|@var_dump}
+
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
 
@@ -228,29 +228,36 @@ function bindCalendar() {
 		margin-left:4px;
 		cursor: pointer;
 	}
-	#form_element input[type=text] {
-		width: 300px;
+	#form_element input[type=text], #form_element select {
+		width: 400px;
 	}
 	#form_element textarea {
-		width: 600px;
+		width: 400px;
 	}
 	.td8 {text-align:right}
 	.hint_div {font-size: 10px; font-color:#888888; float:right}
 	
-	.td_1 {
-		text-align:right;		
-	}
-	.td_2 {
-		text-align:left;
-		padding-left: 10px;
-		padding-bottom: 10px;
-	}
+
 	.form_elem_required {
 		color: red;
 	}
 	input[type=checkbox].error {
 		border: 2px solid red;
 	}
+	
+
+	.td_1 {
+		width: 30%;
+		padding: 5px;
+		text-align: right;
+		
+	}
+	
+	.td_2 {
+		padding: 5px;
+	}
+	
+
 </style>
 {/literal}
 
@@ -286,36 +293,35 @@ function bindCalendar() {
 {assign var ="count_element_tr" value = 0}
 {assign var ="count_continue" value = 0}
 		<table width="100%">
-		{foreach from=$elements[$smarty.section.eee.index] item=item}
+		{foreach from=$elements[$smarty.section.eee.index] item=item key=key}
+
+
 {if $item.elem_columns > 1}
-{$count_element_tr = $item.elem_columns}
-{if $count_continue > 0}
+	
+	{$count_element_tr = $item.elem_columns}
+	{if $count_continue > 0}
 {$count_continue = $count_continue - 1}
 {continue}
 {/if}
 {else}
-{/if}{if !$count_element_tr}
+{/if}
+{$count_element_tr = $item.elem_columns}
+{if !$count_element_tr}
 	<tr>
-				<td>
-			    		title
-				</td>
-				<td>
-					element
-				</td>
+				{include file='parser_elements.tpl' element=$item}
+				
 			</tr>{else}
 	<tr>
-				<td>
+				<td colspan="2">
             				<table width="100%">
 						<tr>
 {$count_continue = $count_element_tr}
-{section name=elem_td start=$smarty.section.eee.index loop=$smarty.section.eee.index + $count_element_tr step=1}
+
+{section name=elem_td start=$key loop=$key + $count_element_tr step=1}
+
 {$count_element_tr = $count_element_tr - 1}
-                  					<td>
-                        					title тт
-                   	 				</td>
-                    					<td>
-                        					element тт
-                    					</td>
+								
+                  					{include file='parser_elements.tpl' element=$elements[$smarty.section.eee.index][$smarty.section.elem_td.index]}
                     				
 {/section}
 						</tr>
