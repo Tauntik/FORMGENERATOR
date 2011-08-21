@@ -9,8 +9,15 @@
 	require_once ('include/user.class.php');
 	require_once ('include/form.class.php');
 	
+	//Добавление к Смарти тега {continue}
+	function smarty_compiler_con­tinue($contents, &$smarty) 
+	{ 
+		return 'continue;'; 
+	} 
+	
 	$smarty 		= new Smarty;
 	$smarty 		-> template_dir = 'tpl/';
+	$smarty 		-> allow_php_tag = true;
 	$page   		= isset($_REQUEST['page'])?$_REQUEST['page']:'';
 	$form  		 	= new form();
 	$user_class   	= new user();
