@@ -288,17 +288,15 @@ function bindCalendar() {
 
 {section name=eee start=1 loop=$max_step+1 step=1}
 <!-- Шаг{$smarty.section.eee.index}------------------------------------------------------------------------------------------------------>
-	<div class="step" id="step_{$smarty.section.eee.index}" style="display:{if $smarty.section.eee.index==1}block{else}none{/if}">
+<div class="step" id="step_{$smarty.section.eee.index}" style="display:{if $smarty.section.eee.index==1}block{else}none{/if}">
 {$max_column = $max_columns[$smarty.section.eee.index]}
 {assign var ="count_element_tr" value = 0}
 {assign var ="count_continue" value = 0}
 <table width="100%">
 {foreach from=$elements[$smarty.section.eee.index] item=item key=key}
-
 {if $item.elem_columns > 1}
-	
-	{$count_element_tr = $item.elem_columns}
-	{if $count_continue > 0}
+{$count_element_tr = $item.elem_columns}
+{if $count_continue > 0}
 {$count_continue = $count_continue - 1}
 {continue}
 {/if}
@@ -307,29 +305,25 @@ function bindCalendar() {
 {$count_element_tr = $item.elem_columns}
 {if !$count_element_tr}
 	<tr>
-				{include file='parser_elements.tpl' element=$item}
-				
+    {include file='parser_elements.tpl' element=$item}
 	</tr>{else}
 	<tr>
 		<td colspan="2">
 			<table width="100%">
 				<tr>
 {$count_continue = $count_element_tr-1}
-
 {section name=elem_td start=$key loop=$key + $count_element_tr step=1}
-
-								
-                  					{include file='parser_elements.tpl' element=$elements[$smarty.section.eee.index][$smarty.section.elem_td.index]}
+    {include file='parser_elements.tpl' element=$elements[$smarty.section.eee.index][$smarty.section.elem_td.index]}
 {$count_element_tr = $count_element_tr - 1}
 {/section}
-                </tr>
-            </table>
+				</tr>
+			</table>
 		</td>
 	</tr>
-			{/if}						
-		{/foreach}
+{/if}						
+{/foreach}
 </table>
-	</div>
+</div>
 {/section}
 
 <span id="error_validate" style="color:red; display: none;"><br/>Пожалуйста, проверьте правильность заполнения полей.</br></span>
