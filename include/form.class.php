@@ -43,6 +43,7 @@ class form {
 	public function get_max_step ($formid) {
 		$max_step = 0;
 		$array_json = $this -> get_html($formid);
+		if (!$array_json) return false;
 		foreach ($array_json as $k => $v) {
 			foreach ($v as $key => $value) {
 				if (($key == 'step') && ($value > $max_step)) {
@@ -57,6 +58,7 @@ class form {
 	public function get_array_max_columns ($formid) {
 		$array_max_columns = array();
 		$array_json = $this -> get_html($formid);
+		if (!$array_json) return false;
 		foreach ($array_json as $k => $v) {
 			foreach ($v as $key => $value) {
 				if (($key == 'step') && ($value > $max_step)) {
@@ -86,6 +88,7 @@ class form {
 		$array_json =array();
 		$json = $this -> get_json($formid);
     	$array_json = json_decode($json);
+		if (!count($array_json)) return false;
 		foreach ($array_json as $k => $v) {
 			foreach ($v as $kk => $vv) {
 				if (!$vv) {

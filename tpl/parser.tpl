@@ -292,9 +292,8 @@ function bindCalendar() {
 {$max_column = $max_columns[$smarty.section.eee.index]}
 {assign var ="count_element_tr" value = 0}
 {assign var ="count_continue" value = 0}
-		<table width="100%">
-		{foreach from=$elements[$smarty.section.eee.index] item=item key=key}
-
+<table width="100%">
+{foreach from=$elements[$smarty.section.eee.index] item=item key=key}
 
 {if $item.elem_columns > 1}
 	
@@ -310,26 +309,26 @@ function bindCalendar() {
 	<tr>
 				{include file='parser_elements.tpl' element=$item}
 				
-			</tr>{else}
+	</tr>{else}
 	<tr>
-				<td colspan="2">
-            				<table width="100%">
-						<tr>
-{$count_continue = $count_element_tr}
+		<td colspan="2">
+			<table width="100%">
+				<tr>
+{$count_continue = $count_element_tr-1}
 
 {section name=elem_td start=$key loop=$key + $count_element_tr step=1}
 
-{$count_element_tr = $count_element_tr - 1}
 								
                   					{include file='parser_elements.tpl' element=$elements[$smarty.section.eee.index][$smarty.section.elem_td.index]}
-                    				
+{$count_element_tr = $count_element_tr - 1}
 {/section}
-						</tr>
-            				</table>
-                		</td>
-                	</tr>
-            {/if}						
-		{/foreach}</table>
+                </tr>
+            </table>
+		</td>
+	</tr>
+			{/if}						
+		{/foreach}
+</table>
 	</div>
 {/section}
 
